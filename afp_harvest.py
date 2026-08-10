@@ -120,6 +120,18 @@ ISAR_COMMANDS = {
     "defer", "prefer", "back", "term", "value", "typ", "thm", "print_statement",
 }
 
+# Commands that OPEN a new goal. Their state is the initial goal of a fresh
+# proof, so they can never be the tactic of a transition -- pairing one with
+# the previous row's state splices the end of one proof onto the start of the
+# next, which is silent garbage in the training data.
+GOAL_OPENERS = {
+    "lemma", "theorem", "corollary", "proposition", "schematic_goal",
+    "definition", "fun", "function", "primrec", "primcorec", "termination",
+    "datatype", "inductive", "inductive_set", "coinductive", "instance",
+    "instantiation", "interpretation", "sublocale", "lift_definition",
+    "typedef", "abbreviation",
+}
+
 # Commands that we never want to emit as a "tactic" in the dataset.
 NON_TACTIC_COMMANDS = {
     "theory", "imports", "begin", "end", "context", "section", "subsection",
@@ -731,6 +743,8 @@ def build_transitions(rows: Iterable[StateRow]) -> Iterator[dict]:
             continue
         if b.command in NON_TACTIC_COMMANDS or not b.command:
             continue
+        if b.command in GOAL_OPENERS:
+            continue          # new proof: not a step from a.state
         if not a.state.strip():
             continue
         yield {
@@ -961,6 +975,16 @@ def self_test() -> int:
     check("state_before is the previous row's state",
           tr[0]["state_before"] == "goal:\n 1. A"
           and tr[0]["tactic"] == "apply (induct xs)")
+
+    boundary = [
+        StateRow("f.thy", "S", 13, 0, "apply simp", "apply", "goal:\nNo subgoals!"),
+        StateRow("f.thy", "S", 22, 0, 'lemma next_one: "..."', "lemma", "goal:\n 1. Z"),
+        StateRow("f.thy", "S", 23, 0, "apply auto", "apply", "goal:\n 1. Y"),
+    ]
+    bt = list(build_transitions(boundary))
+    check("no transition spans a proof boundary",
+          len(bt) == 1 and bt[0]["command"] == "apply",
+          f"got {[t['command'] for t in bt]}")
 
     print("\nroot parsing")
     import tempfile

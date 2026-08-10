@@ -29,15 +29,6 @@
   {
     "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
     "session": "Sanity",
-    "line": 16,
-    "state_before": "proof (prove)\ngoal:\nNo subgoals!",
-    "tactic": "lemma add_zero: \"x + 0 = (x::nat)\"",
-    "command": "lemma",
-    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. x + 0 = x"
-  },
-  {
-    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
-    "session": "Sanity",
     "line": 17,
     "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. x + 0 = x",
     "tactic": "proof -",
@@ -74,15 +65,6 @@
   {
     "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
     "session": "Sanity",
-    "line": 22,
-    "state_before": "proof (state)\nthis:\n  x + 0 = x\n\ngoal:\nNo subgoals!",
-    "tactic": "lemma append_assoc_demo: \"(xs @ ys) @ zs = xs @ (ys @ zs)\"",
-    "command": "lemma",
-    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. (xs @ ys) @ zs = xs @ ys @ zs"
-  },
-  {
-    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
-    "session": "Sanity",
     "line": 23,
     "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. (xs @ ys) @ zs = xs @ ys @ zs",
     "tactic": "apply (induct xs)",
@@ -106,15 +88,6 @@
     "tactic": "apply simp",
     "command": "apply",
     "state_after": "proof (prove)\ngoal:\nNo subgoals!"
-  },
-  {
-    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
-    "session": "Sanity",
-    "line": 30,
-    "state_before": "proof (prove)\ngoal:\nNo subgoals!",
-    "tactic": "lemma two_subgoals: \"xs = [] \\<or> length xs > 0\"",
-    "command": "lemma",
-    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. xs = [] ∨ 0 < length xs"
   },
   {
     "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",

@@ -1,0 +1,695 @@
+[
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 29,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. nextss g (x # xs) = set (nexts g x) ∪ nextss g xs",
+    "tactic": "unfolding nextss_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. set g `` set (x # xs) = set (nexts g x) ∪ set g `` set xs"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 45,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. nodes_of g - set ys ⊆ ?B\n 2. finite ?B",
+    "tactic": "show \"finite (nodes_of g)\"",
+    "command": "show",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. finite (nodes_of g)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 46,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. finite (nodes_of g)",
+    "tactic": "by (auto simp add: nodes_of_def)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  finite (nodes_of g)\n\ngoal (1 subgoal):\n 1. nodes_of g - set ys ⊆ nodes_of g"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 59,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. All dfs_dom",
+    "tactic": "apply (relation \"inv_image (finite_psubset <*lex*> less_than) (\\<lambda>(g,xs,ys). (nodes_of g - set ys, size xs))\")",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (3 subgoals):\n 1. wf (inv_image (finite_psubset <*lex*> less_than)\n         (λ(g, xs, ys). (nodes_of g - set ys, length xs)))\n 2. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x @ xs, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 60,
+    "state_before": "proof (prove)\ngoal (3 subgoals):\n 1. wf (inv_image (finite_psubset <*lex*> less_than)\n         (λ(g, xs, ys). (nodes_of g - set ys, length xs)))\n 2. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x @ xs, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))",
+    "tactic": "apply auto[1]",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (2 subgoals):\n 1. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 2. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x @ xs, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 61,
+    "state_before": "proof (prove)\ngoal (2 subgoals):\n 1. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 2. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x @ xs, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))",
+    "tactic": "apply (simp_all add: finite_psubset_def)",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. ⋀g x ys.\n       x ∉ set ys ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧ nexts g x = []"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 90,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. All dfs2_dom",
+    "tactic": "apply (relation \"inv_image (finite_psubset <*lex*> less_than) (\\<lambda>(g,xs,ys). (nodes_of g - set ys, size xs))\")",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (4 subgoals):\n 1. wf (inv_image (finite_psubset <*lex*> less_than)\n         (λ(g, xs, ys). (nodes_of g - set ys, length xs)))\n 2. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 4. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       ((g, xs, dfs2 g (nexts g x) (x # ys)), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 91,
+    "state_before": "proof (prove)\ngoal (4 subgoals):\n 1. wf (inv_image (finite_psubset <*lex*> less_than)\n         (λ(g, xs, ys). (nodes_of g - set ys, length xs)))\n 2. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 4. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       ((g, xs, dfs2 g (nexts g x) (x # ys)), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))",
+    "tactic": "apply auto[1]",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (3 subgoals):\n 1. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 2. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       ((g, xs, dfs2 g (nexts g x) (x # ys)), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 92,
+    "state_before": "proof (prove)\ngoal (3 subgoals):\n 1. ⋀g x xs ys.\n       List.member ys x ⟹\n       ((g, xs, ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 2. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       ((g, nexts g x, x # ys), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))\n 3. ⋀g x xs ys.\n       ¬ List.member ys x ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       ((g, xs, dfs2 g (nexts g x) (x # ys)), g, x # xs, ys)\n       ∈ inv_image (finite_psubset <*lex*> less_than)\n          (λ(g, xs, ys). (nodes_of g - set ys, length xs))",
+    "tactic": "apply (simp_all add: finite_psubset_def)",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (2 subgoals):\n 1. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 2. ⋀g x ys.\n       x ∉ set ys ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) ⊂ nodes_of g - set ys ∨\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) = nodes_of g - set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 93,
+    "state_before": "proof (prove)\ngoal (2 subgoals):\n 1. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 2. ⋀g x ys.\n       x ∉ set ys ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) ⊂ nodes_of g - set ys ∨\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) = nodes_of g - set ys",
+    "tactic": "apply (case_tac \"x \\<in> nodes_of g\")",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (3 subgoals):\n 1. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       x ∈ nodes_of g ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 2. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       x ∉ nodes_of g ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 3. ⋀g x ys.\n       x ∉ set ys ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) ⊂ nodes_of g - set ys ∨\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) = nodes_of g - set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 94,
+    "state_before": "proof (prove)\ngoal (3 subgoals):\n 1. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       x ∈ nodes_of g ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 2. ⋀g x xs ys.\n       x ∉ set ys ⟹\n       x ∉ nodes_of g ⟹\n       nodes_of g - insert x (set ys) ⊂ nodes_of g - set ys ∨\n       nodes_of g - insert x (set ys) = nodes_of g - set ys ∧\n       length (nexts g x) < Suc (length xs)\n 3. ⋀g x ys.\n       x ∉ set ys ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) ⊂ nodes_of g - set ys ∨\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) = nodes_of g - set ys",
+    "tactic": "apply (auto)[2]",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. ⋀g x ys.\n       x ∉ set ys ⟹\n       dfs2_dom (g, nexts g x, x # ys) ⟹\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) ⊂ nodes_of g - set ys ∨\n       nodes_of g - set (dfs2 g (nexts g x) (x # ys)) = nodes_of g - set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 139,
+    "state_before": "proof (state)\nthis:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n\ngoal (2 subgoals):\n 1. ⋀g ys. set [] ⊆ set (dfs g [] ys)\n 2. ⋀g x xs ys.\n       (List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)) ⟹\n       (¬ List.member ys x ⟹\n        set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))) ⟹\n       set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "show ?case proof(cases \"x \\<in> set ys\")",
+    "command": "show",
+    "state_after": "proof (state)\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 140,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "case True",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n  x ∈ set ys\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 141,
+    "state_before": "proof (state)\nthis:\n  x ∈ set ys\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "have \"set ys \\<subseteq> set (dfs g xs ys)\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. set ys ⊆ set (dfs g xs ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 142,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. set ys ⊆ set (dfs g xs ys)",
+    "tactic": "by (rule visit_subset_dfs)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set ys ⊆ set (dfs g xs ys)\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 143,
+    "state_before": "proof (state)\nthis:\n  set ys ⊆ set (dfs g xs ys)\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)\n 2. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "with 2 and True",
+    "command": "with",
+    "state_after": "proof (chain)\npicking this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∈ set ys\n    set ys ⊆ set (dfs g xs ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 143,
+    "state_before": "proof (chain)\npicking this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∈ set ys\n    set ys ⊆ set (dfs g xs ys)",
+    "tactic": "show ?thesis",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∈ set ys\n    set ys ⊆ set (dfs g xs ys)\n\ngoal (1 subgoal):\n 1. set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 144,
+    "state_before": "proof (prove)\nusing this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∈ set ys\n    set ys ⊆ set (dfs g xs ys)\n\ngoal (1 subgoal):\n 1. set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "by auto",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (x # xs) ⊆ set (dfs g (x # xs) ys)\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 145,
+    "state_before": "proof (state)\nthis:\n  set (x # xs) ⊆ set (dfs g (x # xs) ys)\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "next",
+    "command": "next",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 146,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "case False",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n  x ∉ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 148,
+    "state_before": "proof (state)\nthis:\n  x ∉ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "have \"set (x#ys) \\<subseteq> set (dfs g (nexts g x @ xs) (x#ys))\" by(rule visit_subset_dfs)",
+    "command": "have",
+    "state_after": "proof (state)\nthis:\n  set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 149,
+    "state_before": "proof (state)\nthis:\n  set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "with 2 and False",
+    "command": "with",
+    "state_after": "proof (chain)\npicking this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∉ set ys\n    set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 149,
+    "state_before": "proof (chain)\npicking this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∉ set ys\n    set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))",
+    "tactic": "show ?thesis",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∉ set ys\n    set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n\ngoal (1 subgoal):\n 1. set (x # xs) ⊆ set (dfs g (x # xs) ys)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 150,
+    "state_before": "proof (prove)\nusing this:\n    List.member ys x ⟹ set xs ⊆ set (dfs g xs ys)\n    ¬ List.member ys x ⟹\n    set (nexts g x @ xs) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n    x ∉ set ys\n    set (x # ys) ⊆ set (dfs g (nexts g x @ xs) (x # ys))\n\ngoal (1 subgoal):\n 1. set (x # xs) ⊆ set (dfs g (x # xs) ys)",
+    "tactic": "by auto",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (x # xs) ⊆ set (dfs g (x # xs) ys)\n\ngoal:\nNo subgoals!"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 163,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. r⇧* `` X = X",
+    "tactic": "proof",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (2 subgoals):\n 1. r⇧* `` X ⊆ X\n 2. X ⊆ r⇧* `` X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 164,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. r⇧* `` X ⊆ X\n 2. X ⊆ r⇧* `` X",
+    "tactic": "show \"r\\<^sup>* `` X \\<subseteq> X\"",
+    "command": "show",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 166,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "proof - {",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 168,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "assume y: \"y \\<in> X\"",
+    "command": "assume",
+    "state_after": "proof (state)\nthis:\n  y ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 169,
+    "state_before": "proof (state)\nthis:\n  y ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "assume \"(y,x) \\<in> r\\<^sup>*\"",
+    "command": "assume",
+    "state_after": "proof (state)\nthis:\n  (y, x) ∈ r⇧*\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 170,
+    "state_before": "proof (state)\nthis:\n  (y, x) ∈ r⇧*\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "then",
+    "command": "then",
+    "state_after": "proof (chain)\npicking this:\n  (y, x) ∈ r⇧*"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 170,
+    "state_before": "proof (chain)\npicking this:\n  (y, x) ∈ r⇧*",
+    "tactic": "have \"x \\<in> X\"",
+    "command": "have",
+    "state_after": "proof (prove)\nusing this:\n  (y, x) ∈ r⇧*\n\ngoal (1 subgoal):\n 1. x ∈ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 172,
+    "state_before": "proof (prove)\nusing this:\n  (y, x) ∈ r⇧*\n\ngoal (1 subgoal):\n 1. x ∈ X",
+    "tactic": "by (induct) (insert assms y, auto simp add: Image_def) }",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 173,
+    "state_before": "proof (state)\nthis:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "then",
+    "command": "then",
+    "state_after": "proof (chain)\npicking this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 173,
+    "state_before": "proof (chain)\npicking this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X",
+    "tactic": "show ?thesis",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 173,
+    "state_before": "proof (prove)\nusing this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. r⇧* `` X ⊆ X",
+    "tactic": "unfolding Image_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\nusing this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. {y. ∃x∈X. (x, y) ∈ r⇧*} ⊆ X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 173,
+    "state_before": "proof (prove)\nusing this:\n  ?y2 ∈ X ⟹ (?y2, ?x2) ∈ r⇧* ⟹ ?x2 ∈ X\n\ngoal (1 subgoal):\n 1. {y. ∃x∈X. (x, y) ∈ r⇧*} ⊆ X",
+    "tactic": "by auto",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  r⇧* `` X ⊆ X\n\ngoal:\nNo subgoals!"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 174,
+    "state_before": "proof (state)\nthis:\n  r⇧* `` X ⊆ X\n\ngoal:\nNo subgoals!",
+    "tactic": "qed",
+    "command": "qed",
+    "state_after": "proof (state)\nthis:\n  r⇧* `` X ⊆ X\n\ngoal (1 subgoal):\n 1. X ⊆ r⇧* `` X"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 178,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "proof -",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 179,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "have \"reachable g xs \\<subseteq> reachable g (dfs g xs [])\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g xs ⊆ reachable g (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 180,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g xs ⊆ reachable g (dfs g xs [])",
+    "tactic": "unfolding reachable_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set xs ⊆ (set g)⇧* `` set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 180,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set xs ⊆ (set g)⇧* `` set (dfs g xs [])",
+    "tactic": "by (rule Image_mono) (auto simp add: next_subset_dfs)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  reachable g xs ⊆ reachable g (dfs g xs [])\n\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 181,
+    "state_before": "proof (state)\nthis:\n  reachable g xs ⊆ reachable g (dfs g xs [])\n\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "have \"\\<dots> = set(dfs g xs [])\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (dfs g xs []) = set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 182,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (dfs g xs []) = set (dfs g xs [])",
+    "tactic": "unfolding reachable_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set (dfs g xs []) = set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 183,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set (dfs g xs []) = set (dfs g xs [])",
+    "tactic": "proof (rule Image_closed_trancl)",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. set g `` set (dfs g xs []) ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 184,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. set g `` set (dfs g xs []) ⊆ set (dfs g xs [])",
+    "tactic": "from nextss_closed_dfs",
+    "command": "from",
+    "state_after": "proof (chain)\npicking this:\n  nextss ?g (dfs ?g ?xs []) ⊆ set (dfs ?g ?xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 185,
+    "state_before": "proof (chain)\npicking this:\n  nextss ?g (dfs ?g ?xs []) ⊆ set (dfs ?g ?xs [])",
+    "tactic": "show \"set g `` set (dfs g xs []) \\<subseteq> set (dfs g xs [])\"",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n  nextss ?g (dfs ?g ?xs []) ⊆ set (dfs ?g ?xs [])\n\ngoal (1 subgoal):\n 1. set g `` set (dfs g xs []) ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 186,
+    "state_before": "proof (prove)\nusing this:\n  nextss ?g (dfs ?g ?xs []) ⊆ set (dfs ?g ?xs [])\n\ngoal (1 subgoal):\n 1. set g `` set (dfs g xs []) ⊆ set (dfs g xs [])",
+    "tactic": "by (simp add: nextss_def)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set g `` set (dfs g xs []) ⊆ set (dfs g xs [])\n\ngoal:\nNo subgoals!"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 187,
+    "state_before": "proof (state)\nthis:\n  set g `` set (dfs g xs []) ⊆ set (dfs g xs [])\n\ngoal:\nNo subgoals!",
+    "tactic": "qed",
+    "command": "qed",
+    "state_after": "proof (state)\nthis:\n  reachable g (dfs g xs []) = set (dfs g xs [])\n\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 188,
+    "state_before": "proof (state)\nthis:\n  reachable g (dfs g xs []) = set (dfs g xs [])\n\ngoal (1 subgoal):\n 1. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "finally",
+    "command": "finally",
+    "state_after": "proof (chain)\npicking this:\n  reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 188,
+    "state_before": "proof (chain)\npicking this:\n  reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "show ?thesis .",
+    "command": "show",
+    "state_after": "proof (state)\nthis:\n  reachable g xs ⊆ set (dfs g xs [])\n\ngoal:\nNo subgoals!"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 192,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (nexts g x) ⊆ reachable g [x]",
+    "tactic": "unfolding reachable_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set (nexts g x) ⊆ (set g)⇧* `` set [x]"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 196,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (xs @ ys) = reachable g xs ∪ reachable g ys",
+    "tactic": "unfolding reachable_def",
+    "command": "unfolding",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. (set g)⇧* `` set (xs @ ys) = (set g)⇧* `` set xs ∪ (set g)⇧* `` set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 201,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. ⋀g ys. set (dfs g [] ys) ⊆ reachable g [] ∪ set ys\n 2. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "case 1",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n  \n\ngoal (2 subgoals):\n 1. ⋀g ys. set (dfs g [] ys) ⊆ reachable g [] ∪ set ys\n 2. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 202,
+    "state_before": "proof (state)\nthis:\n  \n\ngoal (2 subgoals):\n 1. ⋀g ys. set (dfs g [] ys) ⊆ reachable g [] ∪ set ys\n 2. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "then",
+    "command": "then",
+    "state_after": "proof (chain)\npicking this:\n  "
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 202,
+    "state_before": "proof (chain)\npicking this:\n  ",
+    "tactic": "show ?case",
+    "command": "show",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g_ [] ys_) ⊆ reachable g_ [] ∪ set ys_"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 202,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g_ [] ys_) ⊆ reachable g_ [] ∪ set ys_",
+    "tactic": "by simp",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (dfs g_ [] ys_) ⊆ reachable g_ [] ∪ set ys_\n\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 203,
+    "state_before": "proof (state)\nthis:\n  set (dfs g_ [] ys_) ⊆ reachable g_ [] ∪ set ys_\n\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "next",
+    "command": "next",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 204,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "case (2 g x xs ys)",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 205,
+    "state_before": "proof (state)\nthis:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n\ngoal (1 subgoal):\n 1. ⋀g x xs ys.\n       (List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys) ⟹\n       (¬ List.member ys x ⟹\n        set (dfs g (nexts g x @ xs) (x # ys))\n        ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)) ⟹\n       set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "show ?case",
+    "command": "show",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 206,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "proof (cases \"x \\<in> set ys\")",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n 2. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 207,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n 2. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "case True",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n  x ∈ set ys\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n 2. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 208,
+    "state_before": "proof (state)\nthis:\n  x ∈ set ys\n\ngoal (2 subgoals):\n 1. x ∈ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n 2. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "with 2",
+    "command": "with",
+    "state_after": "proof (chain)\npicking this:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    x ∈ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 208,
+    "state_before": "proof (chain)\npicking this:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    x ∈ set ys",
+    "tactic": "show \"set (dfs g (x#xs) ys) \\<subseteq> reachable g (x#xs) \\<union> set ys\"",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    x ∈ set ys\n\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 209,
+    "state_before": "proof (prove)\nusing this:\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    x ∈ set ys\n\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "by (auto simp add: reachable_def)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 210,
+    "state_before": "proof (state)\nthis:\n  set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "next",
+    "command": "next",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 211,
+    "state_before": "proof (state)\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "case False",
+    "command": "case",
+    "state_after": "proof (state)\nthis:\n  x ∉ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 212,
+    "state_before": "proof (state)\nthis:\n  x ∉ set ys\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "have \"reachable g (nexts g x) \\<subseteq> reachable g [x]\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (nexts g x) ⊆ reachable g [x]"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 213,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. reachable g (nexts g x) ⊆ reachable g [x]",
+    "tactic": "by (rule reachable_nexts)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  reachable g (nexts g x) ⊆ reachable g [x]\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 215,
+    "state_before": "proof (state)\nthis:\n  reachable g (nexts g x) ⊆ reachable g [x]\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "hence a: \"reachable g (nexts g x @ xs) \\<subseteq> reachable g (x#xs)\" by(simp add: reachable_append, auto simp add: reachable_def)",
+    "command": "hence",
+    "state_after": "proof (state)\nthis:\n  reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 216,
+    "state_before": "proof (state)\nthis:\n  reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)\n\ngoal (1 subgoal):\n 1. x ∉ set ys ⟹ set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "with False 2",
+    "command": "with",
+    "state_after": "proof (chain)\npicking this:\n    x ∉ set ys\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 217,
+    "state_before": "proof (chain)\npicking this:\n    x ∉ set ys\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)",
+    "tactic": "show \"set (dfs g (x#xs) ys) \\<subseteq> reachable g (x#xs) \\<union> set ys\"",
+    "command": "show",
+    "state_after": "proof (prove)\nusing this:\n    x ∉ set ys\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)\n\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 218,
+    "state_before": "proof (prove)\nusing this:\n    x ∉ set ys\n    List.member ys x ⟹ set (dfs g xs ys) ⊆ reachable g xs ∪ set ys\n    ¬ List.member ys x ⟹\n    set (dfs g (nexts g x @ xs) (x # ys))\n    ⊆ reachable g (nexts g x @ xs) ∪ set (x # ys)\n    reachable g (nexts g x @ xs) ⊆ reachable g (x # xs)\n\ngoal (1 subgoal):\n 1. set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys",
+    "tactic": "by (auto simp add: reachable_def)",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (dfs g (x # xs) ys) ⊆ reachable g (x # xs) ∪ set ys\n\ngoal:\nNo subgoals!"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 226,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g xs []) = reachable g xs",
+    "tactic": "proof",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (2 subgoals):\n 1. set (dfs g xs []) ⊆ reachable g xs\n 2. reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 227,
+    "state_before": "proof (state)\ngoal (2 subgoals):\n 1. set (dfs g xs []) ⊆ reachable g xs\n 2. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "have \"set (dfs g xs []) \\<subseteq> reachable g xs \\<union> set []\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g xs []) ⊆ reachable g xs ∪ set []"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 228,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. set (dfs g xs []) ⊆ reachable g xs ∪ set []",
+    "tactic": "by (rule dfs_subset_reachable_visit_nodes[of g xs \"[]\"])",
+    "command": "by",
+    "state_after": "proof (state)\nthis:\n  set (dfs g xs []) ⊆ reachable g xs ∪ set []\n\ngoal (2 subgoals):\n 1. set (dfs g xs []) ⊆ reachable g xs\n 2. reachable g xs ⊆ set (dfs g xs [])"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 229,
+    "state_before": "proof (state)\nthis:\n  set (dfs g xs []) ⊆ reachable g xs ∪ set []\n\ngoal (2 subgoals):\n 1. set (dfs g xs []) ⊆ reachable g xs\n 2. reachable g xs ⊆ set (dfs g xs [])",
+    "tactic": "thus \"set (dfs g xs []) \\<subseteq> reachable g xs\"",
+    "command": "thus",
+    "state_after": "proof (prove)\nusing this:\n  set (dfs g xs []) ⊆ reachable g xs ∪ set []\n\ngoal (1 subgoal):\n 1. set (dfs g xs []) ⊆ reachable g xs"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
+    "session": "Depth-First-Search",
+    "line": 250,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. OFCLASS(node, equal_class)",
+    "tactic": "proof",
+    "command": "proof",
+    "state_after": "proof (state)\ngoal (1 subgoal):\n 1. ⋀x y. equal_class.equal x y = (x = y)"
+  }
+]
