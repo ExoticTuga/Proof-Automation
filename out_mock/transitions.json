@@ -1,0 +1,173 @@
+[
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 10,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_3 &",
+    "tactic": "lemma rev_rev [simp]: \"rev (rev xs) = xs\"",
+    "command": "lemma",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_10 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 11,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_10 &",
+    "tactic": "apply (induct xs)",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_11 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 12,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_11 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_12 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 13,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_12 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_13 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 16,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_13 &",
+    "tactic": "lemma add_zero: \"x + 0 = (x::nat)\"",
+    "command": "lemma",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_16 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 17,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_16 &",
+    "tactic": "proof -",
+    "command": "proof",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_17 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 18,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_17 &",
+    "tactic": "have \"x + 0 = x\"",
+    "command": "have",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_18 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 19,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_18 &",
+    "tactic": "thus ?thesis .",
+    "command": "thus",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_19 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 20,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_19 &",
+    "tactic": "qed",
+    "command": "qed",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_20 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 22,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_20 &",
+    "tactic": "lemma append_assoc_demo: \"(xs @ ys) @ zs = xs @ (ys @ zs)\"",
+    "command": "lemma",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_22 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 23,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_22 &",
+    "tactic": "apply (induct xs)",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_23 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 24,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_23 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_24 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 25,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_24 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_25 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 26,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_25 &",
+    "tactic": "done",
+    "command": "done",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_26 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 30,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_26 &",
+    "tactic": "lemma two_subgoals: \"xs = [] \\<or> length xs > 0\"",
+    "command": "lemma",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_30 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 31,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_30 &",
+    "tactic": "apply (cases xs)",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_31 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 32,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_31 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_32 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 33,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_32 &",
+    "tactic": "apply simp",
+    "command": "apply",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_33 &"
+  },
+  {
+    "file": "/home/ExoticTuga/llm-finetune-project/testbed/thys/Sanity/Sanity.thy",
+    "session": "Sanity",
+    "line": 34,
+    "state_before": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_33 &",
+    "tactic": "done",
+    "command": "done",
+    "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. mock_goal_at_line_34 &"
+  }
+]
