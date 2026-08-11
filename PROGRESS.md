@@ -1,7 +1,9 @@
 # Isabelle Proof-State Harvester — Progress & Handover
 
 **Status:** working end to end on real AFP entries. Not yet run at scale.
-**Last verified:** `Depth-First-Search` (AFP 2026-06-29) → 99 states, 77 transitions, 100% alignment, 0 errors.
+**Last verified:** `Depth-First-Search` (AFP 2026-06-29) → 161 probes, 109 states,
+86 transitions, 100% alignment, 0 errors, 0 orphaned rows.
+**Output format:** JSONL, `prefix` / `state` / `continuation` per row.
 
 ---
 
@@ -75,11 +77,11 @@ the logic for where to put the cursor and what to do with the answers.
 
 | Stage | What it proves | Result |
 |---|---|---|
-| 1. `--self-test` | Parsing/logic correct, no Isabelle needed | 17 assertions pass |
+| 1. `--self-test` | Parsing/logic correct, no Isabelle needed | 29 assertions pass |
 | 2. `--mock` | Full pipeline with a fake Isabelle | 23 states, 19 transitions |
 | 3. `--probe-api` | Library API matches our assumptions | all names confirmed |
 | 4. Live sanity run | LSP wiring works, `-l HOL`, no AFP build | 17 states, 13 transitions |
-| 5. Live AFP entry | Real proofs, ROOT parsing, imports | 99 states, 77 transitions |
+| 5. Live AFP entry | Real proofs, ROOT parsing, imports | 109 states, 86 transitions |
 
 ### Not done yet
 
@@ -148,6 +150,14 @@ never looks for keywords inside them. This is checked by the self-test.
 
 A command span runs from a keyword to just before the next keyword; the cursor
 goes at the end, with trailing comments trimmed.
+
+**Isabelle does not require a space before a delimiter.** `proof(cases xs)`,
+`by(auto)` and `apply(induct xs)` are all legal, and all lex as one
+whitespace-delimited token. Matching tokens exactly against the keyword list
+missed them, which cost real proof states (DFS.thy went from 151 to 161 probes
+once fixed) *and* corrupted proof-block nesting — a missed `proof` left the
+depth at 0, so a later `by` closed the wrong block. `command_keyword()` now
+matches a leading keyword followed by `(`, `[`, `{` or `<`.
 
 ### 4.3 Positions (`LineIndex`)
 
@@ -275,38 +285,88 @@ TACTIC: lemma append_assoc: "…"            ← start of a different proof
 which would teach the model to emit `lemma` whenever a proof finishes. This is
 silent garbage — the row looks structurally fine. Guarded by a self-test.
 
-### 4.7 Output
+### 4.7 Proof blocks and the training triple
+
+Each row needs three things: what the model has already seen (`prefix`), the
+goal it must act on (`state`), and what actually came next (`continuation`).
+
+Because the caret sits at the **end** of a command:
 
 ```
-out_dir/
-├── states.json               ← every distinct state
-├── transitions.json          ← the training rows
-└── states.checkpoint.jsonl   ← crash-recovery log, used by --resume
+prefix        ends with the command just executed
+state         the goal that command produced
+continuation  begins with the command to predict
 ```
 
-The checkpoint is JSONL because a JSON array cannot be safely appended to
-mid-run. If a 400-entry run dies, `--resume` reads it and skips finished files.
-`transitions.json` is always rebuilt from the full checkpoint, so resuming
-still produces a complete dataset. Delete the checkpoint to start clean.
+`continuation` is scoped to the **enclosing proof**, not the file. That keeps
+rows small and makes the end of a proof meaningful. `proof_blocks()` finds
+those spans, tracking nesting so a `by` closing an inner `have` is not mistaken
+for the end of the outer proof.
 
-**Row format:**
+Critically, `proof_blocks()` and `probes_by_command()` both call
+`command_spans()`. They must agree exactly: when they were computed
+independently, a block closed by `by (auto simp: foo)` ended after `by`, the
+caret at the end of the full command fell outside every block, and 21 rows
+silently lost their prefix and continuation. Sharing the span builder makes
+that class of bug impossible.
+
+### 4.8 The stop signal — not what you would expect
+
+The intuition is that the last row of a proof has an empty `continuation`.
+**In harvested data this never happens.**
+
+Isabelle emits no state at the position that closes a proof. `done` produces no
+message; so does a `by` that closes a whole lemma. The state panel only fires
+when its content *changes*, and after the proof is finished there is nothing
+new to show. So the closing position never becomes a row.
+
+The signal is one step earlier. The final row of `rev_rev` is:
+
+```
+state:        proof (prove)  goal: No subgoals!
+continuation: done
+```
+
+The model learns *No subgoals → emit `done` → stop*. Each row therefore carries
+`remaining`, the number of commands left in the proof after the caret:
+
+- `remaining == 1` — last row you will actually get; only the closer remains
+- `remaining == 0` — the closing position itself; expect ~0 of these
+
+On DFS.thy: 23 proof blocks, 22 rows at `remaining == 1`, 0 at `remaining == 0`.
+
+### 4.9 Output
+
+JSONL — one record per line, newlines inside states escaped, streams straight
+into training pipelines.
+
+```
+out_dir/states.jsonl              the training rows
+out_dir/transitions.jsonl         state_before / tactic / state_after
+out_dir/states.checkpoint.jsonl   crash log, used by --resume
+```
+
+`--format json` or `both` if a JSON array is also wanted. The checkpoint stays
+JSONL regardless, because a JSON array cannot be appended to safely mid-run;
+`--resume` reads it and skips finished files, and `transitions` is always
+rebuilt from the whole checkpoint so a resumed run is still complete.
+
+**`states.jsonl` is the training file.** Abridged record:
 
 ```json
-{
-  "file": "afp-2026-06-29/thys/Depth-First-Search/DFS.thy",
-  "session": "Depth-First-Search",
-  "line": 94,
-  "state_before": "proof (prove)\ngoal (3 subgoals):\n 1. …",
-  "tactic": "apply (auto)[2]",
-  "command": "apply",
-  "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. …"
-}
+{"line": 11, "command": "apply", "in_proof": true, "remaining": 3, "offset": 372,
+ "prefix": "lemma rev_rev [simp]: \"rev (rev xs) = xs\"\n  apply (induct xs)",
+ "state": "proof (prove)\ngoal (2 subgoals):\n 1. rev (rev []) = []\n 2. …",
+ "continuation": "\n   apply simp\n  apply simp\n  done"}
 ```
 
-`states.json` rows also carry `output` — the *output panel* text, which holds
-hints and error messages. Useful for filtering later.
+**Filter on `in_proof` before training.** Rows outside any proof (`theory`,
+`imports`, `begin`, `end`) also have an empty continuation, but that is not a
+proof-finished signal. In practice most of those produce no state at all, so
+they rarely appear — but the flag is there to be safe.
 
----
+`--prefix-scope file` widens `prefix` to the whole theory. Much larger: proof
+scope gave a median of 204 characters on DFS.thy, max 786.
 
 ## 5. Running it
 
@@ -362,6 +422,9 @@ python validate_dataset.py out_afp --sample 3
 | `--dump-raw` | log every message with timings to `logs/` |
 | `--settle` / `--quiet` | timing knobs |
 | `-o NAME=VALUE` | extra Isabelle option (repeatable) |
+| `--prefix-scope proof\|file` | context window for `prefix` (default proof) |
+| `--format jsonl\|json\|both` | output encoding (default jsonl) |
+| `--show-blocks` | print proof-block segmentation offline, then exit |
 | `-v` | one log line per state |
 
 ---
@@ -377,9 +440,19 @@ would be attributed to the **wrong command** and the dataset would still look
 perfectly plausible. Nothing else would catch it. Both live runs reported
 100%.
 
+The second structural check is **`proof commands marked outside a proof`**. If
+a row's command is `apply`/`by`/`show`/`qed` but it is not inside any proof
+block, the block detector and the command scanner disagree — and those rows
+lose their prefix and continuation silently. This must always be 0.
+
 It also reports empty states, states containing Isabelle error text, leftover
 un-stripped HTML, files with suspiciously few states (usually a failed load),
-the command distribution, and which files contain `sorry`/`oops`.
+the command distribution, prefix length percentiles, the `remaining`
+distribution, and which files contain `sorry`/`oops`.
+
+**Read the aggregates, not just the errors.** Both structural bugs found so far
+surfaced as implausible counts (`proof-finished rows: 0` in a file full of
+finished proofs), never as an exception.
 
 ---
 
@@ -410,10 +483,11 @@ the state count is unchanged, the shorter wait costs nothing.
 Start with the 313. Then `isabelle build -b HOL-Library HOL-Analysis` unlocks
 ~160 more. That reaches ~470 entries before anything exotic is required.
 
-**4. Filtering before training.** `transitions.json` is raw. Drop rows whose
-`state_after` contains error text, whose file contains `sorry`/`oops`, and
-whose `state_before` is empty. Consider splitting off `by`/`done`/`qed` rows —
-they are the easiest steps and will otherwise dominate.
+**4. Filtering before training.** The output is raw. Drop rows with
+`in_proof: false`, rows whose `state`/`output` contains error text, and rows
+from files containing `sorry`/`oops`. Consider splitting off `by`/`done`/`qed`
+rows — they are the easiest steps and will otherwise dominate (19% of DFS
+transitions).
 
 **5. Isar command coverage.** `probes_by_command()` uses a keyword heuristic. A
 bound variable literally named `show` or `case` would be misread. The
@@ -464,6 +538,18 @@ for l in open('out_logs/DFS.dynamic_output.jsonl'):
 
 Clusters within ~0.3 s mean Isabelle is still elaborating — `--quiet` must
 outlast the gap inside a cluster.
+
+**Proof blocks look wrong.** `--show-blocks` prints the segmentation offline,
+with no Isabelle:
+
+```bash
+python afp_harvest.py --afp afp-2026-06-29/thys \
+  --include Depth-First-Search --show-blocks
+```
+
+Each block shows its line range, opening and closing text, and whether a probe
+lands on its end (`END-PROBED`). Any `END NOT PROBED <<<` means the block
+detector and the command scanner have drifted apart.
 
 **`probe_state.py`** is a standalone minimal reproduction of the state-panel
 handshake. If the main script misbehaves, run it to isolate LSP problems from

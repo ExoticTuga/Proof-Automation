@@ -64,21 +64,37 @@ Omit `--logic` on AFP entries so the parent session is read from `ROOT`.
 
 ## Output
 
+JSONL (one record per line — newlines inside proof states are escaped, and the
+format streams directly into training pipelines).
+
 ```
-out_dir/states.json               every distinct proof state
-out_dir/transitions.json          the training rows
+out_dir/states.jsonl              the training rows: prefix / state / continuation
+out_dir/transitions.jsonl         state_before / tactic / state_after
 out_dir/states.checkpoint.jsonl   crash log, used by --resume; delete to restart
 ```
 
+`--format json` or `--format both` if you also want a JSON array.
+
+**`states.jsonl` is the training file.** One record (abridged):
+
 ```json
-{
-  "line": 94,
-  "state_before": "proof (prove)\ngoal (3 subgoals):\n 1. …",
-  "tactic": "apply (auto)[2]",
-  "command": "apply",
-  "state_after": "proof (prove)\ngoal (1 subgoal):\n 1. …"
-}
+{"line": 11, "command": "apply", "in_proof": true, "offset": 372,
+ "prefix": "lemma rev_rev [simp]: \"rev (rev xs) = xs\"\n  apply (induct xs)",
+ "state": "proof (prove)\ngoal (2 subgoals):\n 1. rev (rev []) = []\n 2. …",
+ "continuation": "\n   apply simp\n  apply simp\n  done"}
 ```
+
+The caret sits at the **end** of a command, so `prefix` ends with the command
+just executed, `state` is the goal it produced, and `continuation` begins with
+the command to predict.
+
+`continuation` is scoped to the **enclosing proof**, so it is empty exactly
+when the proof is finished — that is the stop signal. `--prefix-scope file`
+widens `prefix` to the whole theory (much larger files).
+
+**`in_proof` must be filtered on.** Rows outside any proof (`theory`,
+`imports`, `begin`, `end`) also have an empty continuation, but that is not a
+proof-finished signal. Drop `in_proof: false` before training.
 
 ## Flags
 
@@ -88,6 +104,8 @@ out_dir/states.checkpoint.jsonl   crash log, used by --resume; delete to restart
 | `--limit N` | only the first N files |
 | `--resume` | skip files already in the checkpoint |
 | `--mode commands\|tokens` | cursor per Isar command (default) or per whitespace token |
+| `--prefix-scope proof\|file` | context window for `prefix` (default proof) |
+| `--format jsonl\|json\|both` | output encoding (default jsonl) |
 | `--settle` / `--quiet` | timing knobs (2.0 / 0.35 s) |
 | `--trace` | print every cursor stop and the state it returned |
 | `--dump-raw` | log every LSP message with timings |

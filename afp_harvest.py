@@ -259,6 +259,93 @@ class Probe:
     character: int
     probe_text: str      # the token / command text the caret sits at the end of
     command: str         # the Isar command keyword this position belongs to
+    prefix: str = ""     # theory text up to the caret
+    continuation: str = ""   # theory text after the caret, to the proof's end
+    in_proof: bool = False
+    remaining: int = -1  # commands left in the proof after the caret
+
+
+# Commands that can open a block of proof text.
+PROOF_OPENERS = {
+    "lemma", "theorem", "corollary", "proposition", "schematic_goal",
+    "function", "termination", "instance", "interpretation", "sublocale",
+    "lift_definition", "primcorec",
+}
+
+
+def proof_blocks(text: str) -> list[tuple[int, int]]:
+    """Character spans of each proof, from its opener to the END of its
+    closing command (arguments included).
+
+    Scoping `continuation` to the proof rather than to the file is what makes
+    it empty exactly when the proof is finished -- the signal the model needs
+    in order to learn when to stop.
+
+    Nesting is tracked so that `by` closing an inner `have` is not mistaken
+    for the end of the enclosing proof: `by`/`done` only close at depth 0, and
+    `qed` closes only when it brings the depth back to 0.
+    """
+    blocks: list[tuple[int, int]] = []
+    start: Optional[int] = None
+    depth = 0
+
+    for kw, s, e in command_spans(text):
+        if start is None:
+            if kw in PROOF_OPENERS:
+                start, depth = s, 0
+            continue
+
+        if kw == "proof":
+            depth += 1
+        elif kw == "qed":
+            depth -= 1
+            if depth <= 0:
+                blocks.append((start, e))
+                start, depth = None, 0
+        elif kw in ("done", "by") and depth == 0:
+            blocks.append((start, e))
+            start = None
+        elif kw in ("oops", "sorry"):
+            blocks.append((start, e))
+            start, depth = None, 0
+        elif kw in PROOF_OPENERS and depth == 0:
+            blocks.append((start, s))       # previous never closed cleanly
+            start, depth = s, 0
+
+    if start is not None:
+        blocks.append((start, len(text)))
+    return blocks
+
+
+def block_for(offset: int, blocks: list[tuple[int, int]]) -> Optional[tuple[int, int]]:
+    for s, e in blocks:
+        if s <= offset <= e:
+            return (s, e)
+    return None
+
+
+def attach_context(text: str, probes: list[Probe], scope: str = "proof") -> None:
+    """Fill in prefix and continuation on each probe, in place.
+
+    scope="proof" keeps prefix from the proof's opener (compact, and the
+    continuation ends with the proof). scope="file" uses the whole file, which
+    is complete but repeats the file once per row.
+    """
+    blocks = proof_blocks(text)
+    spans = command_spans(text)
+    for p in probes:
+        blk = block_for(p.offset, blocks)
+        if blk is None:
+            p.prefix = text[:p.offset] if scope == "file" else ""
+            p.continuation = ""
+            p.in_proof = False
+            p.remaining = -1
+            continue
+        p.in_proof = True
+        s, e = blk
+        p.remaining = sum(1 for _, cs, ce in spans if p.offset < ce <= e)
+        p.prefix = text[(0 if scope == "file" else s):p.offset]
+        p.continuation = text[p.offset:e]
 
 
 def probes_by_token(text: str, idx: LineIndex) -> list[Probe]:
@@ -268,37 +355,66 @@ def probes_by_token(text: str, idx: LineIndex) -> list[Probe]:
     for tok in scan(text):
         if tok.kind == "comment":
             continue
-        if tok.kind == "word" and tok.text in ISAR_COMMANDS:
-            current_cmd = tok.text
+        kw = command_keyword(tok.text) if tok.kind == "word" else None
+        if kw:
+            current_cmd = kw
         line, char = idx.position(tok.end)
         out.append(Probe(tok.end, line, char, tok.text, current_cmd))
     return out
 
 
-def probes_by_command(text: str, idx: LineIndex) -> list[Probe]:
-    """Caret at the end of every Isar command span.
+_KEYWORD_HEAD = re.compile(r"^([A-Za-z][A-Za-z0-9_']*)")
 
-    A command span runs from a command keyword up to (but not including) the
-    next command keyword; trailing comments and whitespace are trimmed so the
-    caret lands on real syntax.
+
+def command_keyword(tok_text: str) -> Optional[str]:
+    """The Isar command a word token starts, or None.
+
+    Isabelle does not require a space before a delimiter, so `proof(cases x)`,
+    `by(auto)` and `apply(induct xs)` are all legal and all lex as a single
+    whitespace-delimited token. Matching the token exactly against the keyword
+    list misses them -- and missing a `proof` throws off proof-block nesting,
+    which then lets a later `by` close the wrong block.
     """
-    toks = [t for t in scan(text)]
-    starts: list[int] = []          # indices into toks where a command begins
-    for k, tok in enumerate(toks):
-        if tok.kind == "word" and tok.text in ISAR_COMMANDS:
-            starts.append(k)
+    m = _KEYWORD_HEAD.match(tok_text)
+    if not m:
+        return None
+    kw = m.group(1)
+    if kw not in ISAR_COMMANDS:
+        return None
+    rest = tok_text[m.end():]
+    if rest and rest[0] not in "([{<\"'":
+        return None                    # e.g. an identifier like `proofs`
+    return kw
 
-    out: list[Probe] = []
-    for n, k in enumerate(starts):
-        stop = starts[n + 1] if n + 1 < len(starts) else len(toks)
+
+def command_spans(text: str) -> list[tuple[str, int, int]]:
+    """(keyword, start, end) for each Isar command span.
+
+    A span runs from a command keyword to just before the next one, with
+    trailing comments trimmed. Shared by probes_by_command and proof_blocks so
+    that a block's end and a caret position agree exactly -- they must, or
+    `by (auto simp: foo)` ends its block after `by` and the caret at the end of
+    the command falls outside every block.
+    """
+    toks = scan(text)
+    starts = [(k, command_keyword(t.text)) for k, t in enumerate(toks)
+              if t.kind == "word" and command_keyword(t.text)]
+    out: list[tuple[str, int, int]] = []
+    for n, (k, kw) in enumerate(starts):
+        stop = starts[n + 1][0] if n + 1 < len(starts) else len(toks)
         span = [t for t in toks[k:stop] if t.kind != "comment"]
         if not span:
             continue
-        end_off = span[-1].end
-        line, char = idx.position(end_off)
-        cmd_text = text[span[0].start:end_off]
-        out.append(Probe(end_off, line, char, " ".join(cmd_text.split()),
-                         toks[k].text))
+        out.append((kw, span[0].start, span[-1].end))
+    return out
+
+
+def probes_by_command(text: str, idx: LineIndex) -> list[Probe]:
+    """Caret at the end of every Isar command span."""
+    out: list[Probe] = []
+    for kw, s, e in command_spans(text):
+        line, char = idx.position(e)
+        out.append(Probe(e, line, char, " ".join(text[s:e].split()), kw))
     return out
 
 
@@ -392,6 +508,22 @@ class StateRow:
     probe: str
     command: str
     state: str
+    # prefix + state -> continuation is the training triple. continuation is
+    # scoped to the enclosing proof, so it is empty exactly when the proof is
+    # finished, which is how the model learns to stop.
+    prefix: str = ""
+    continuation: str = ""
+    # False for rows outside any proof (theory header, text blocks). Their
+    # continuation is empty too, but that is NOT a proof-finished signal --
+    # filter these out before training.
+    in_proof: bool = False
+    # Commands left in the proof after this caret. 0 means the proof is over;
+    # 1 means only the closing command (`done`/`qed`/`by`) remains -- which is
+    # the real stop signal, because Isabelle emits NO state at the position
+    # that closes a proof, so a literally empty continuation never occurs in
+    # harvested data.
+    remaining: int = -1
+    offset: int = 0       # char offset of the caret, to recover full context
     output: str = ""      # output-panel text (hints, errors); state is primary
 
 
@@ -548,6 +680,11 @@ class Harvester:
                 probe=p.probe_text,
                 command=p.command,
                 state=decode_symbols(state, self.symbols),
+                prefix=p.prefix,
+                continuation=p.continuation,
+                in_proof=p.in_proof,
+                remaining=p.remaining,
+                offset=p.offset,
                 output=self._output,
             ))
             if trace:
@@ -653,6 +790,7 @@ async def harvest_file(thy: Path, cfg: argparse.Namespace,
               else probes_by_token(text, idx))
     if not probes:
         return []
+    attach_context(text, probes, cfg.prefix_scope)
 
     info = session_for(thy, sessions)
     options = ["-l", cfg.logic or info.parent]
@@ -745,16 +883,23 @@ def build_transitions(rows: Iterable[StateRow]) -> Iterator[dict]:
             continue
         if b.command in GOAL_OPENERS:
             continue          # new proof: not a step from a.state
+        if not (a.in_proof and b.in_proof):
+            continue          # outside any proof: not a proof step
         if not a.state.strip():
             continue
         yield {
             "file": b.file,
             "session": b.session,
             "line": b.line,
-            "state_before": a.state,
-            "tactic": b.probe,
+            "prefix": a.prefix,          # text the model has seen so far
+            "state_before": a.state,     # goal it must act on
+            "tactic": b.probe,           # what the human wrote next
             "command": b.command,
             "state_after": b.state,
+            "continuation": b.continuation,
+            "remaining": b.remaining,
+            "closes_proof": b.remaining == 0,
+            "last_step": b.remaining <= 1,
         }
 
 
@@ -897,6 +1042,18 @@ proof -
   thus ?thesis .
 qed
 
+lemma closed_by_args: "rev (rev xs) = xs"
+  by (auto simp add: rev_rev_ident)
+
+lemma no_space_before_paren: "xs = [] \\<or> length xs > 0"
+proof(cases xs)
+  case Nil
+  show ?thesis by(simp add: Nil)
+next
+  case Cons
+  show ?thesis by(simp add: Cons)
+qed
+
 text \u2039markup with \u2039nested\u2039\u203a\u203a cartouches and the word apply inside\u203a
 
 end
@@ -962,11 +1119,12 @@ def self_test() -> int:
           decode_symbols("\\<zzz>", tbl) == "\\<zzz>")
 
     print("\ntransitions")
+    P = dict(in_proof=True)
     rows = [
-        StateRow("f.thy", "S", 7, 0, "lemma foo", "lemma", "goal:\n 1. A"),
-        StateRow("f.thy", "S", 8, 0, "apply (induct xs)", "apply", "goal:\n 1. B"),
-        StateRow("f.thy", "S", 9, 0, "done", "done", ""),
-        StateRow("g.thy", "S", 3, 0, "apply auto", "apply", "goal:\n 1. C"),
+        StateRow("f.thy", "S", 7, 0, "lemma foo", "lemma", "goal:\n 1. A", **P),
+        StateRow("f.thy", "S", 8, 0, "apply (induct xs)", "apply", "goal:\n 1. B", **P),
+        StateRow("f.thy", "S", 9, 0, "done", "done", "", **P),
+        StateRow("g.thy", "S", 3, 0, "apply auto", "apply", "goal:\n 1. C", **P),
     ]
     tr = list(build_transitions(rows))
     check("pairs are consecutive within a file", len(tr) == 2, f"got {len(tr)}")
@@ -977,14 +1135,55 @@ def self_test() -> int:
           and tr[0]["tactic"] == "apply (induct xs)")
 
     boundary = [
-        StateRow("f.thy", "S", 13, 0, "apply simp", "apply", "goal:\nNo subgoals!"),
-        StateRow("f.thy", "S", 22, 0, 'lemma next_one: "..."', "lemma", "goal:\n 1. Z"),
-        StateRow("f.thy", "S", 23, 0, "apply auto", "apply", "goal:\n 1. Y"),
+        StateRow("f.thy", "S", 13, 0, "apply simp", "apply", "goal:\nNo subgoals!", **P),
+        StateRow("f.thy", "S", 22, 0, 'lemma next_one: "..."', "lemma", "goal:\n 1. Z", **P),
+        StateRow("f.thy", "S", 23, 0, "apply auto", "apply", "goal:\n 1. Y", **P),
     ]
+    outside = [
+        StateRow("f.thy", "S", 1, 0, "theory T", "theory", "x"),
+        StateRow("f.thy", "S", 2, 0, "imports Main", "imports", "y"),
+    ]
+    check("no transition outside a proof",
+          len(list(build_transitions(outside))) == 0)
     bt = list(build_transitions(boundary))
     check("no transition spans a proof boundary",
           len(bt) == 1 and bt[0]["command"] == "apply",
           f"got {[t['command'] for t in bt]}")
+
+    print("\nproof blocks")
+    blocks = proof_blocks(text)
+    check("one block per lemma", len(blocks) == 4, f"got {len(blocks)}")
+    nospace = text[blocks[3][0]:blocks[3][1]]
+    check("proof(cases ...) is recognised without a space",
+          nospace.rstrip().endswith("qed"), repr(nospace[-24:]))
+    check("by(...) inside a structured proof does not close it",
+          nospace.count("by(simp") == 2, str(nospace.count("by(simp")))
+    argblk = blocks[2]
+    check("block closed by `by` includes its arguments",
+          text[argblk[0]:argblk[1]].rstrip().endswith("rev_rev_ident)"),
+          repr(text[argblk[0]:argblk[1]][-30:]))
+    check("apply-script block ends at done",
+          text[blocks[0][0]:blocks[0][1]].rstrip().endswith("done"))
+    check("structured block ends at qed",
+          text[blocks[1][0]:blocks[1][1]].rstrip().endswith("qed"))
+    check("nested by does not close the outer proof",
+          text[blocks[1][0]:blocks[1][1]].count("by simp") == 1)
+
+    ctx = probes_by_command(text, idx)
+    attach_context(text, ctx)
+    closers = [p for p in ctx if p.in_proof and p.continuation == ""]
+    check("continuation empty exactly at the proof's close",
+          {p.command for p in closers} == {"done", "qed", "by"},
+          str(sorted(p.command for p in closers)))
+    check("header rows are marked outside a proof",
+          all(not p.in_proof for p in ctx if p.command in
+              ("theory", "imports", "begin", "end", "text")))
+    first_apply = next(p for p in ctx if p.command == "apply")
+    check("prefix ends at the caret",
+          first_apply.prefix.rstrip().endswith("(induct xs)"),
+          repr(first_apply.prefix[-30:]))
+    check("continuation starts with the next command",
+          first_apply.continuation.strip().startswith("apply simp"))
 
     print("\nroot parsing")
     import tempfile
@@ -1023,6 +1222,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     ap.add_argument("--out", default="dataset")
     ap.add_argument("--log-dir", default="logs")
     ap.add_argument("--mode", choices=("commands", "tokens"), default="commands")
+    ap.add_argument("--prefix-scope", choices=("proof", "file"), default="proof",
+                    help="'proof' keeps prefix from the enclosing proof's "
+                         "opener and ends continuation at the proof's close, "
+                         "so continuation is empty exactly when the proof is "
+                         "done. 'file' uses the whole theory (much larger).")
     ap.add_argument("--offset-encoding", choices=("utf16", "codepoint"),
                     default="utf16")
     ap.add_argument("--settle", type=float, default=2.0,
@@ -1034,7 +1238,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     ap.add_argument("--file-timeout", type=float, default=1800.0)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--include", default=None, help="regex filter on the path")
-    ap.add_argument("--format", choices=("json", "jsonl", "both"), default="json",
+    ap.add_argument("--format", choices=("jsonl", "json", "both"), default="jsonl",
                     help="output serialisation (default: json arrays)")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--mock", action="store_true",
@@ -1046,6 +1250,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     ap.add_argument("--dump-raw", action="store_true",
                     help="log every dynamic_output message with timings to "
                          "logs/<Theory>.dynamic_output.jsonl")
+    ap.add_argument("--show-blocks", action="store_true",
+                    help="print proof-block segmentation for each file and "
+                         "exit (offline, no Isabelle)")
     ap.add_argument("--self-test", action="store_true",
                     help="run offline checks (no Isabelle needed) and exit")
     ap.add_argument("--probe-api", action="store_true",
@@ -1063,6 +1270,33 @@ def main(argv: list[str]) -> int:
         format="%(asctime)s %(levelname)-7s %(message)s",
         datefmt="%H:%M:%S",
     )
+    if cfg.show_blocks:
+        afp = Path(cfg.afp).expanduser().resolve()
+        for thy in discover(afp, cfg.limit, cfg.include):
+            text = thy.read_text(encoding="utf-8", errors="replace")
+            idx = LineIndex(text, cfg.offset_encoding)
+            probes = probes_by_command(text, idx)
+            attach_context(text, probes, cfg.prefix_scope)
+            blocks = proof_blocks(text)
+            ends = {e for _, e in blocks}
+            starts = {s for s, _ in blocks}
+            offsets = {p.offset for p in probes}
+            nl = text.count
+            print(f"\n=== {thy}  ({len(blocks)} blocks, {len(probes)} probes)")
+            for s, e in blocks:
+                ls = text[:s].count("\n") + 1
+                le = text[:e].count("\n") + 1
+                hit = "END-PROBED" if e in offsets else "END NOT PROBED  <<<"
+                print(f"  L{ls:<5}-L{le:<5} {e - s:>6} chars  {hit}")
+                print(f"      opens: {text[s:s+58].splitlines()[0][:58]!r}")
+                print(f"      closes:{text[max(s, e-58):e].splitlines()[-1][:58]!r}")
+            outside = [p for p in probes if not p.in_proof]
+            print(f"  probes outside any block: {len(outside)}")
+            for p in outside[:8]:
+                print(f"      L{p.line+1:<5} [{p.command}] {p.probe_text[:50]}")
+            fin = [p for p in probes if p.in_proof and p.continuation == ""]
+            print(f"  probes at a block end: {len(fin)}")
+        return 0
     if cfg.self_test:
         return self_test()
     if cfg.probe_api:

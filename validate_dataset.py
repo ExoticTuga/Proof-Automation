@@ -89,8 +89,8 @@ def check_alignment(states: list[dict], encoding: str) -> tuple[int, int, list[s
 
 
 def report(out_dir: Path, encoding: str, sample: int) -> int:
-    states = load(out_dir / "states.json") or load(out_dir / "states.jsonl")
-    trans = load(out_dir / "transitions.json") or load(out_dir / "transitions.jsonl")
+    states = load(out_dir / "states.jsonl") or load(out_dir / "states.json")
+    trans = load(out_dir / "transitions.jsonl") or load(out_dir / "transitions.json")
     if not states:
         print(f"no states found in {out_dir}")
         return 2
@@ -148,9 +148,51 @@ def report(out_dir: Path, encoding: str, sample: int) -> int:
         dupes = Counter((t["state_before"], t["tactic"]) for t in trans)
         n_dupe = sum(v - 1 for v in dupes.values() if v > 1)
         print(f"  duplicate (state_before, tactic) pairs: {n_dupe}")
-        closing = sum(1 for t in trans if t["command"] in ("by", "done", "qed"))
-        print(f"  proof-closing steps: {closing} "
-              f"({100.0*closing/len(trans):.0f}% of rows)")
+        closing = Counter(t["command"] for t in trans
+                          if t["command"] in ("by", "done", "qed"))
+        total_closing = sum(closing.values())
+        detail = ", ".join(f"{k}={v}" for k, v in closing.most_common())
+        print(f"  proof-closing steps: {total_closing} "
+              f"({100.0*total_closing/len(trans):.0f}% of rows)  [{detail}]")
+        print(f"  final steps of a proof (remaining<=1): "
+              f"{sum(1 for t in trans if t.get('last_step'))}")
+
+    print("\n== training context ==")
+    with_prefix = sum(1 for r in states if r.get("prefix"))
+    in_proof = sum(1 for r in states if r.get("in_proof"))
+    outside = [r for r in states if not r.get("in_proof")]
+    true_stop = [r for r in states
+                 if r.get("in_proof") and r.get("continuation") == ""]
+    print(f"  rows with a prefix:   {with_prefix}/{len(states)}")
+    print(f"  rows inside a proof:  {in_proof}/{len(states)}")
+    print(f"  outside any proof:    {len(outside)}  (filter before training)")
+    print(f"  proof-finished rows:  {len(true_stop)}  (empty continuation)")
+    last = [r for r in states if r.get("remaining") == 1]
+    zero = [r for r in states if r.get("remaining") == 0]
+    print(f"  last step of a proof: {len(last)}  (remaining==1: only the "
+          f"closing command left)")
+    print(f"  after the close:      {len(zero)}  (remaining==0; usually 0 "
+          f"because Isabelle emits no state there)")
+    if with_prefix:
+        lens = sorted(len(r.get("prefix", "")) for r in states if r.get("prefix"))
+        print(f"  prefix chars: min={lens[0]} median={lens[len(lens)//2]} "
+              f"max={lens[-1]}")
+    bad = [r for r in states
+           if r.get("in_proof") and r.get("prefix")
+           and not r["prefix"].rstrip().endswith(
+               (r["probe"].split()[-1] if r["probe"].split() else "\0"))]
+    print(f"  prefix not ending at the probe: {len(bad)}")
+    proofy = {"apply", "by", "done", "qed", "show", "have", "proof", "next",
+              "case", "thus", "hence", "unfolding", "using", "obtain"}
+    orphan = [r for r in states
+              if r["command"] in proofy and not r.get("in_proof")]
+    print(f"  proof commands marked outside a proof: {len(orphan)}")
+    for r in orphan[:5]:
+        print(f"   ! {Path(r['file']).name}:{r['line']} [{r['command']}] "
+              f"{r['probe'][:50]}")
+    if orphan:
+        print("   >> proof-block detection is disagreeing with the command "
+              "scanner; these rows lose their prefix and continuation.")
 
     print("\n== contamination ==")
     incomplete = []
