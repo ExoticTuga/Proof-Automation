@@ -73,7 +73,6 @@ out_dir/transitions.jsonl         state_before / tactic / state_after
 out_dir/states.checkpoint.jsonl   crash log, used by --resume; delete to restart
 ```
 
-`--format json` or `--format both` if you also want a JSON array.
 
 **`states.jsonl` is the training file.** One record (abridged):
 
@@ -112,7 +111,7 @@ proof-finished signal. Drop `in_proof: false` before training.
 | `-o NAME=VALUE` | extra Isabelle option, repeatable |
 | `-v` | one log line per state |
 
-## Two things that will confuse you later
+## Two things worth noting
 
 **We read `PIDE/state_output`, not `PIDE/dynamic_output`.** They are different
 panels. `dynamic_output` is the *output* panel — hints and the finished theorem
