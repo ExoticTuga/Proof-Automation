@@ -288,12 +288,17 @@ def proof_blocks(text: str) -> list[tuple[int, int]]:
     blocks: list[tuple[int, int]] = []
     start: Optional[int] = None
     depth = 0
+    prev_end: Optional[int] = None      # end of the last command span seen
 
     for kw, s, e in command_spans(text):
         if start is None:
             if kw in PROOF_OPENERS:
                 start, depth = s, 0
+            prev_end = e
             continue
+
+        prev_end_before = prev_end
+        prev_end = e
 
         if kw == "proof":
             depth += 1
@@ -309,11 +314,16 @@ def proof_blocks(text: str) -> list[tuple[int, int]]:
             blocks.append((start, e))
             start, depth = None, 0
         elif kw in PROOF_OPENERS and depth == 0:
-            blocks.append((start, s))       # previous never closed cleanly
+            # The previous block never closed with by/done/qed -- it was a
+            # one-liner such as `lift_definition ... is "f" .` or a
+            # `definition`/`instance` with no proof. Close it at the END of the
+            # last command span, not at the start of this one: block ends must
+            # coincide with caret positions, or every such block is orphaned.
+            blocks.append((start, prev_end_before if prev_end_before is not None else s))
             start, depth = s, 0
 
     if start is not None:
-        blocks.append((start, len(text)))
+        blocks.append((start, prev_end if prev_end is not None else len(text)))
     return blocks
 
 
@@ -1045,6 +1055,10 @@ qed
 lemma closed_by_args: "rev (rev xs) = xs"
   by (auto simp add: rev_rev_ident)
 
+lemma trivial_dot: "x = (x::nat)" .
+
+lift_definition ld_demo :: "nat \\<Rightarrow> nat" is "id" .
+
 lemma no_space_before_paren: "xs = [] \\<or> length xs > 0"
 proof(cases xs)
   case Nil
@@ -1152,16 +1166,19 @@ def self_test() -> int:
 
     print("\nproof blocks")
     blocks = proof_blocks(text)
-    check("one block per lemma", len(blocks) == 4, f"got {len(blocks)}")
-    nospace = text[blocks[3][0]:blocks[3][1]]
+    check("one block per lemma", len(blocks) == 6, f"got {len(blocks)}")
+    ends = {e for _, e in blocks}
+    offs = {p.offset for p in probes_by_command(text, idx)}
+    check("every block end coincides with a caret position",
+          ends <= offs, f"{len(ends - offs)} block ends unreachable")
+    nospace = next(text[s:e] for s, e in blocks if "no_space_before_paren" in text[s:e])
     check("proof(cases ...) is recognised without a space",
           nospace.rstrip().endswith("qed"), repr(nospace[-24:]))
     check("by(...) inside a structured proof does not close it",
           nospace.count("by(simp") == 2, str(nospace.count("by(simp")))
-    argblk = blocks[2]
+    argblk = next(text[s:e] for s, e in blocks if "closed_by_args" in text[s:e])
     check("block closed by `by` includes its arguments",
-          text[argblk[0]:argblk[1]].rstrip().endswith("rev_rev_ident)"),
-          repr(text[argblk[0]:argblk[1]][-30:]))
+          argblk.rstrip().endswith("rev_rev_ident)"), repr(argblk[-30:]))
     check("apply-script block ends at done",
           text[blocks[0][0]:blocks[0][1]].rstrip().endswith("done"))
     check("structured block ends at qed",
@@ -1173,7 +1190,8 @@ def self_test() -> int:
     attach_context(text, ctx)
     closers = [p for p in ctx if p.in_proof and p.continuation == ""]
     check("continuation empty exactly at the proof's close",
-          {p.command for p in closers} == {"done", "qed", "by"},
+          {p.command for p in closers} >= {"done", "qed", "by"}
+          and not ({"apply", "have", "show"} & {p.command for p in closers}),
           str(sorted(p.command for p in closers)))
     check("header rows are marked outside a proof",
           all(not p.in_proof for p in ctx if p.command in
@@ -1288,8 +1306,19 @@ def main(argv: list[str]) -> int:
                 le = text[:e].count("\n") + 1
                 hit = "END-PROBED" if e in offsets else "END NOT PROBED  <<<"
                 print(f"  L{ls:<5}-L{le:<5} {e - s:>6} chars  {hit}")
-                print(f"      opens: {text[s:s+58].splitlines()[0][:58]!r}")
-                print(f"      closes:{text[max(s, e-58):e].splitlines()[-1][:58]!r}")
+                head = " ".join(text[s:s + 120].split())[:58]
+                tail = " ".join(text[max(s, e - 120):e].split())[-58:]
+                print(f"      opens: {head!r}")
+                print(f"      closes:{tail!r}")
+                if e not in offsets:
+                    nxt = [(cs, ce) for _, cs, ce in command_spans(text)
+                           if cs >= e][:1]
+                    near = min((abs(p.offset - e), p.offset, p.command)
+                               for p in probes) if probes else None
+                    print(f"      end_off={e} nearest_probe={near}")
+                    if nxt:
+                        print(f"      next_cmd_at={nxt[0][0]} "
+                              f"{text[nxt[0][0]:nxt[0][1]][:40]!r}")
             outside = [p for p in probes if not p.in_proof]
             print(f"  probes outside any block: {len(outside)}")
             for p in outside[:8]:
