@@ -917,11 +917,38 @@ def build_transitions(rows: Iterable[StateRow]) -> Iterator[dict]:
 # 7. CLI
 # --------------------------------------------------------------------------- #
 
-def discover(afp: Path, limit: Optional[int], include: Optional[str]) -> list[Path]:
+def discover(afp: Path, limit: Optional[int], include: Optional[str],
+             entries: Optional[Path] = None,
+             shard: Optional[int] = None,
+             num_shards: Optional[int] = None) -> list[Path]:
     files = sorted(p for p in afp.glob("*/*.thy") if p.is_file())
+    if entries:
+        wanted = {ln.strip() for ln in entries.read_text().splitlines()
+                  if ln.strip() and not ln.startswith("#")}
+        before = len(files)
+        files = [p for p in files if p.parent.name in wanted]
+        log.info("entry list %s: %d of %d entries, %d of %d theory files",
+                 entries.name, len({p.parent.name for p in files}),
+                 len(wanted), len(files), before)
+        missing = wanted - {p.parent.name for p in files}
+        if missing:
+            log.warning("%d listed entries not found, e.g. %s",
+                        len(missing), sorted(missing)[:3])
     if include:
         rx = re.compile(include)
         files = [p for p in files if rx.search(str(p))]
+
+    if num_shards and num_shards > 1:
+        if shard is None or not (0 <= shard < num_shards):
+            raise SystemExit(f"--shard must be in [0, {num_shards})")
+        # Round-robin over entries (not files) so an entry's theories stay in
+        # one task, and so shards get a mix of large and small entries rather
+        # than one task drawing every big one.
+        names = sorted({p.parent.name for p in files})
+        mine = {n for i, n in enumerate(names) if i % num_shards == shard}
+        files = [p for p in files if p.parent.name in mine]
+        log.info("shard %d/%d: %d entries, %d theory files",
+                 shard, num_shards, len(mine), len(files))
     return files[:limit] if limit else files
 
 
@@ -957,7 +984,8 @@ async def main_async(cfg: argparse.Namespace) -> int:
 
     sessions = parse_roots(afp)
     symbols = load_symbol_table(cfg.isabelle_home or os.environ.get("ISABELLE_HOME"))
-    files = discover(afp, cfg.limit, cfg.include)
+    files = discover(afp, cfg.limit, cfg.include, cfg.entries,
+                     cfg.shard, cfg.num_shards)
     log.info("%d theory files to process", len(files))
 
     # Append-only checkpoint. A JSON array cannot be appended to safely, so
@@ -1256,6 +1284,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     ap.add_argument("--file-timeout", type=float, default=1800.0)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--include", default=None, help="regex filter on the path")
+    ap.add_argument("--shard", type=int, default=None, metavar="I",
+                    help="process only shard I of --num-shards (0-based). "
+                         "Sharding is by ENTRY, so an entry's theories stay "
+                         "together in one task.")
+    ap.add_argument("--num-shards", type=int, default=None, metavar="N")
+    ap.add_argument("--entries", type=Path, default=None,
+                    help="file listing AFP entry (session) names, one per line; "
+                         "only those entries are harvested. Use with "
+                         "split_entries.py to keep the held-out test entries "
+                         "out of the training harvest.")
     ap.add_argument("--format", choices=("jsonl", "json", "both"), default="jsonl",
                     help="output serialisation (default: json arrays)")
     ap.add_argument("--resume", action="store_true")
@@ -1290,7 +1328,7 @@ def main(argv: list[str]) -> int:
     )
     if cfg.show_blocks:
         afp = Path(cfg.afp).expanduser().resolve()
-        for thy in discover(afp, cfg.limit, cfg.include):
+        for thy in discover(afp, cfg.limit, cfg.include, cfg.entries):
             text = thy.read_text(encoding="utf-8", errors="replace")
             idx = LineIndex(text, cfg.offset_encoding)
             probes = probes_by_command(text, idx)
@@ -1333,7 +1371,7 @@ def main(argv: list[str]) -> int:
         return 0
     if cfg.dry_run:
         afp = Path(cfg.afp).expanduser().resolve()
-        for thy in discover(afp, cfg.limit, cfg.include):
+        for thy in discover(afp, cfg.limit, cfg.include, cfg.entries):
             text = thy.read_text(encoding="utf-8", errors="replace")
             idx = LineIndex(text, cfg.offset_encoding)
             ps = (probes_by_command(text, idx) if cfg.mode == "commands"
