@@ -1,0 +1,7 @@
+seed=20260815  test_frac=0.2
+entries: 304  train: 243  test: 61 (20.1%)
+theory files: train 1580  test 447
+bytes: train 42.9 MB  test 9.1 MB
+
+stratum                             train   test   test%
+HOL                                   243     61     20%
