@@ -193,6 +193,12 @@ def report(out_dir: Path, encoding: str, sample: int) -> int:
     if orphan:
         print("   >> proof-block detection is disagreeing with the command "
               "scanner; these rows lose their prefix and continuation.")
+        byfile = Counter(Path(r["file"]).name for r in orphan)
+        print("   most affected files:")
+        for f, n in byfile.most_common(5):
+            print(f"      {f}: {n}")
+        print("   >> usually an Isar command missing from ISAR_COMMANDS. Run")
+        print("      afp_harvest.py --show-blocks on one of these files.")
 
     print("\n== contamination ==")
     incomplete = []

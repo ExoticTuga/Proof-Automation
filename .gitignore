@@ -1,0 +1,40 @@
+# --- large regenerable artefacts -------------------------------------------
+# Everything here can be rebuilt from the scripts that ARE tracked. None of it
+# belongs in version control, and several items would exceed GitHub's limits.
+
+# AFP corpus (~370 MB, redownloadable from the Archive of Formal Proofs).
+# Matched at any depth: it currently lives under src/, not the repo root.
+**/afp-2*/
+
+# Model checkpoints (~220 GB) and the HuggingFace cache (~15 GB)
+runs/
+.hf/
+*.safetensors
+*.bin
+*.pth
+
+# Harvested corpus, training pairs, per-file Isabelle logs (~24 GB)
+data/
+results/
+*.jsonl
+*.isabelle.log
+
+# Slurm output
+slurm_logs/
+gpuinfo.txt
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Editor scratch and backups
+*.bak
+*.bak[0-9]
+*~
+.vscode/
+.idea/
+.DS_Store
+src/afp-2026-06-29/

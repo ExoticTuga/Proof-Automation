@@ -1,1 +1,0 @@
-val _ = if MLton.isMLton then main() else ()

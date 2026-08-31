@@ -1,1 +1,0 @@
-fun writeln s = (print s; print "\n")

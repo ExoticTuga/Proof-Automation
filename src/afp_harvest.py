@@ -95,29 +95,55 @@ def decode_symbols(text: str, table: dict[str, str]) -> str:
 # --------------------------------------------------------------------------- #
 
 ISAR_COMMANDS = {
-    # theory / specification level
-    "theory", "imports", "begin", "end", "context", "locale", "class",
-    "instantiation", "instance", "interpretation", "sublocale", "bundle",
-    "definition", "abbreviation", "fun", "function", "primrec", "primcorec",
-    "termination", "datatype", "codatatype", "record", "type_synonym",
-    "typedef", "typedecl", "consts", "axiomatization", "declare", "declaration",
-    "lemmas", "notation", "no_notation", "syntax", "translations",
+    # -- theory header / structure
+    "theory", "imports", "keywords", "abbrevs", "begin", "end", "context",
+    "locale", "class", "subclass", "instantiation", "instance",
+    "interpretation", "interpret", "sublocale", "bundle", "unbundle",
+    "include", "including", "overloading", "specification",
+    # -- specifications
+    "definition", "abbreviation", "type_synonym", "type_notation",
+    "no_type_notation", "nonterminal", "typedecl", "typedef",
+    "quotient_type", "quotient_definition", "setup_lifting",
+    "lift_definition", "lifting_forget", "lifting_update",
+    "datatype", "codatatype", "datatype_compat", "old_rep_datatype",
+    "free_constructors", "bnf", "bnf_def", "lift_bnf", "copy_bnf", "functor",
+    "primrec", "primcorec", "primcorecursive", "fun", "fun_cases", "function",
+    "termination", "partial_function", "record", "consts", "axiomatization",
     "inductive", "inductive_set", "coinductive", "coinductive_set",
-    "lift_definition", "setup_lifting", "code_datatype", "export_code",
-    "sledgehammer_params", "method", "ML", "ML_file", "setup", "local_setup",
-    # document markup -- not useful themselves, but they must terminate the
-    # span of the preceding proof command or the caret drifts into prose
+    "inductive_cases", "inductive_simps", "judgment",
+    # -- declarations
+    "declare", "declaration", "syntax_declaration", "lemmas", "named_theorems",
+    "notation", "no_notation", "syntax", "no_syntax", "translations",
+    "no_translations", "adhoc_overloading", "no_adhoc_overloading",
+    # -- code generation
+    "code_datatype", "export_code", "code_printing", "code_identifier",
+    "code_reserved", "code_monad", "code_reflect", "code_pred", "values",
+    # -- ML and setup
+    "ML", "ML_file", "ML_prf", "ML_val", "ML_command", "setup", "local_setup",
+    "attribute_setup", "method_setup", "simproc_setup", "method",
+    "parse_ast_translation", "parse_translation", "print_translation",
+    "typed_print_translation", "print_ast_translation",
+    # -- diagnostics (never tactics, but they end a command span)
+    "term", "prop", "typ", "thm", "prf", "full_prf", "value",
+    "print_state", "print_theory", "print_methods", "print_attributes",
+    "print_theorems", "print_statement", "print_bundles", "find_theorems",
+    "find_consts", "class_deps", "print_bnfs",
+    "sledgehammer", "sledgehammer_params", "nitpick", "nitpick_params",
+    "quickcheck", "quickcheck_params", "try", "try0", "solve_direct", "refute",
+    # -- document markup: not tactics, but they terminate the preceding
+    #    command's span, so the caret does not drift into prose
     "chapter", "section", "subsection", "subsubsection", "paragraph",
     "subparagraph", "text", "txt", "text_raw", "abstract",
-    # goal openers
+    # -- goal openers
     "lemma", "theorem", "corollary", "proposition", "schematic_goal",
-    # proof body
-    "proof", "qed", "apply", "apply_end", "by", "done", "next", "oops",
-    "sorry", "show", "showing", "thus", "have", "hence", "obtain", "fix",
-    "assume", "presume", "define", "let", "note", "also", "finally",
-    "moreover", "ultimately", "using", "unfolding", "with", "from", "then",
-    "case", "consider", "supply", "include", "including", "subgoal",
-    "defer", "prefer", "back", "term", "value", "typ", "thm", "print_statement",
+    "notepad",
+    # -- proof body
+    "proof", "qed", "next", "done", "by", "oops", "sorry", "apply",
+    "apply_end", "defer", "prefer", "back", "subgoal", "supply",
+    "using", "unfolding", "note", "then", "from", "with",
+    "have", "show", "thus", "hence", "obtain", "guess", "consider",
+    "fix", "assume", "presume", "define", "let", "write", "case",
+    "moreover", "ultimately", "also", "finally",
 }
 
 # Commands that OPEN a new goal. Their state is the initial goal of a fresh
@@ -126,10 +152,13 @@ ISAR_COMMANDS = {
 # next, which is silent garbage in the training data.
 GOAL_OPENERS = {
     "lemma", "theorem", "corollary", "proposition", "schematic_goal",
-    "definition", "fun", "function", "primrec", "primcorec", "termination",
-    "datatype", "inductive", "inductive_set", "coinductive", "instance",
-    "instantiation", "interpretation", "sublocale", "lift_definition",
-    "typedef", "abbreviation",
+    "notepad", "definition", "fun", "function", "primrec", "primcorec",
+    "primcorecursive", "termination", "datatype", "codatatype", "inductive",
+    "inductive_set", "coinductive", "coinductive_set", "instance",
+    "instantiation", "interpretation", "sublocale", "subclass",
+    "lift_definition", "quotient_type", "quotient_definition", "typedef",
+    "abbreviation", "specification", "free_constructors", "bnf", "lift_bnf",
+    "copy_bnf", "old_rep_datatype", "functor", "partial_function", "record",
 }
 
 # Commands that we never want to emit as a "tactic" in the dataset.
@@ -267,9 +296,15 @@ class Probe:
 
 # Commands that can open a block of proof text.
 PROOF_OPENERS = {
+    # Commands that open a block of proof text. Some (lemma, theorem) always
+    # do; others (lift_definition, quotient_type) usually close immediately
+    # with `.` or `by ...`, which proof_blocks handles.
     "lemma", "theorem", "corollary", "proposition", "schematic_goal",
-    "function", "termination", "instance", "interpretation", "sublocale",
-    "lift_definition", "primcorec",
+    "notepad", "function", "termination", "instance", "interpretation",
+    "sublocale", "subclass", "lift_definition", "primcorec", "primcorecursive",
+    "quotient_type", "typedef", "specification", "free_constructors",
+    "bnf", "lift_bnf", "copy_bnf", "old_rep_datatype", "functor",
+    "partial_function", "inductive_cases", "inductive_simps",
 }
 
 
@@ -1087,6 +1122,14 @@ lemma trivial_dot: "x = (x::nat)" .
 
 lift_definition ld_demo :: "nat \\<Rightarrow> nat" is "id" .
 
+quotient_type qt_demo = "nat \\<Rightarrow> nat" / "(=)"
+  by (rule identity_equivp)
+
+notepad
+begin
+  have "u = u" by simp
+end
+
 lemma no_space_before_paren: "xs = [] \\<or> length xs > 0"
 proof(cases xs)
   case Nil
@@ -1194,7 +1237,10 @@ def self_test() -> int:
 
     print("\nproof blocks")
     blocks = proof_blocks(text)
-    check("one block per lemma", len(blocks) == 6, f"got {len(blocks)}")
+    check("one block per lemma", len(blocks) == 8, f"got {len(blocks)}")
+    for kw in ("quotient_type", "notepad"):
+        check(f"{kw} opens a proof block",
+              any(kw in text[s:e] for s, e in blocks))
     ends = {e for _, e in blocks}
     offs = {p.offset for p in probes_by_command(text, idx)}
     check("every block end coincides with a caret position",
@@ -1221,9 +1267,11 @@ def self_test() -> int:
           {p.command for p in closers} >= {"done", "qed", "by"}
           and not ({"apply", "have", "show"} & {p.command for p in closers}),
           str(sorted(p.command for p in closers)))
+    # begin/end are excluded: they legitimately occur INSIDE a notepad,
+    # locale or instantiation block.
     check("header rows are marked outside a proof",
           all(not p.in_proof for p in ctx if p.command in
-              ("theory", "imports", "begin", "end", "text")))
+              ("theory", "imports", "text")))
     first_apply = next(p for p in ctx if p.command == "apply")
     check("prefix ends at the caret",
           first_apply.prefix.rstrip().endswith("(induct xs)"),

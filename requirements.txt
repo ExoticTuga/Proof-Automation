@@ -1,0 +1,11 @@
+annotated-types==0.8.0
+isabelle_lsp_client @ git+https://github.com/christiankissig/python-isabelle-lsp-client.git@b8c7e221d1aef9eee4371eb4977f24b7474a6794
+librt==0.15.0
+lsp_client @ git+https://github.com/christiankissig/python-lsp-client.git@b0f421a4cd94fff87aca364c4bb4c2e59677be9b
+mypy==1.20.2
+mypy_extensions==1.1.0
+pathspec==1.1.1
+pydantic==2.13.4
+pydantic_core==2.46.4
+typing-inspection==0.4.4
+typing_extensions==4.16.0

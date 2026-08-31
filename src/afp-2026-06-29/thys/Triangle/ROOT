@@ -1,8 +1,0 @@
-chapter AFP
-
-session Triangle = "HOL-Analysis" +
-  options [timeout = 600]
-  theories
-    Triangle
-  document_files
-    "root.tex"

@@ -1,8 +1,0 @@
-chapter AFP
-
-session "Aristotles_Assertoric_Syllogistic" = HOL +
-  options [timeout = 300]
-  theories
-    AristotlesAssertoric
-  document_files
-    "root.tex"
