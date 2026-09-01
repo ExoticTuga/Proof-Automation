@@ -1,0 +1,549 @@
+11:55:48 INFO    447 theory files from 61 held-out entries
+11:55:51 INFO    335 files have harvested states to anchor against
+11:56:07 INFO    7115 candidate theorems (proofs of 1-12 steps)
+11:56:07 INFO    attempting 20 theorems across 20 files
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:04<23:22,  4.15s/it]Loading weights:   7%|▋         | 25/339 [00:04<00:43,  7.30it/s]Loading weights:   9%|▊         | 29/339 [00:05<00:49,  6.22it/s]Loading weights:  12%|█▏        | 41/339 [00:06<00:31,  9.33it/s]Loading weights:  13%|█▎        | 44/339 [00:06<00:34,  8.65it/s]Loading weights:  16%|█▌        | 53/339 [00:07<00:32,  8.85it/s]Loading weights:  19%|█▉        | 65/339 [00:08<00:27, 10.08it/s]Loading weights:  22%|██▏       | 76/339 [00:09<00:23, 11.28it/s]Loading weights:  25%|██▌       | 86/339 [00:09<00:16, 15.56it/s]Loading weights:  27%|██▋       | 90/339 [00:10<00:20, 12.32it/s]Loading weights:  28%|██▊       | 96/339 [00:10<00:18, 12.89it/s]Loading weights:  29%|██▉       | 100/339 [00:10<00:18, 12.80it/s]Loading weights:  30%|███       | 103/339 [00:11<00:19, 12.07it/s]Loading weights:  31%|███       | 105/339 [00:11<00:20, 11.59it/s]Loading weights:  33%|███▎      | 112/339 [00:12<00:23,  9.63it/s]Loading weights:  34%|███▎      | 114/339 [00:12<00:23,  9.45it/s]Loading weights:  37%|███▋      | 125/339 [00:12<00:14, 15.27it/s]Loading weights:  39%|███▉      | 133/339 [00:13<00:10, 19.23it/s]Loading weights:  40%|████      | 136/339 [00:13<00:11, 17.13it/s]Loading weights:  41%|████      | 138/339 [00:14<00:18, 10.84it/s]Loading weights:  43%|████▎     | 146/339 [00:14<00:12, 15.34it/s]Loading weights:  44%|████▍     | 149/339 [00:14<00:17, 11.09it/s]Loading weights:  45%|████▍     | 151/339 [00:15<00:20,  9.03it/s]Loading weights:  47%|████▋     | 161/339 [00:16<00:18,  9.64it/s]Loading weights:  51%|█████     | 172/339 [00:16<00:11, 14.76it/s]Loading weights:  52%|█████▏    | 175/339 [00:17<00:14, 11.04it/s]Loading weights:  55%|█████▍    | 185/339 [00:17<00:12, 12.33it/s]Loading weights:  57%|█████▋    | 192/339 [00:17<00:09, 16.17it/s]Loading weights:  58%|█████▊    | 196/339 [00:18<00:10, 13.01it/s]Loading weights:  59%|█████▊    | 199/339 [00:18<00:11, 11.69it/s]Loading weights:  61%|██████    | 206/339 [00:19<00:09, 13.76it/s]Loading weights:  61%|██████▏   | 208/339 [00:19<00:13,  9.77it/s]Loading weights:  62%|██████▏   | 210/339 [00:19<00:12, 10.62it/s]Loading weights:  63%|██████▎   | 212/339 [00:20<00:11, 10.93it/s]Loading weights:  63%|██████▎   | 214/339 [00:20<00:11, 11.31it/s]Loading weights:  65%|██████▍   | 220/339 [00:20<00:10, 11.19it/s]Loading weights:  65%|██████▌   | 222/339 [00:21<00:14,  7.97it/s]Loading weights:  69%|██████▊   | 233/339 [00:22<00:10,  9.76it/s]Loading weights:  72%|███████▏  | 245/339 [00:22<00:06, 15.46it/s]Loading weights:  73%|███████▎  | 248/339 [00:23<00:07, 12.32it/s]Loading weights:  76%|███████▌  | 257/339 [00:24<00:07, 10.72it/s]Loading weights:  79%|███████▉  | 269/339 [00:24<00:05, 12.68it/s]Loading weights:  80%|███████▉  | 271/339 [00:25<00:05, 11.84it/s]Loading weights:  83%|████████▎ | 281/339 [00:26<00:05, 11.28it/s]Loading weights:  86%|████████▋ | 293/339 [00:27<00:03, 12.15it/s]Loading weights:  87%|████████▋ | 295/339 [00:27<00:03, 12.37it/s]Loading weights:  90%|████████▉ | 305/339 [00:27<00:02, 13.21it/s]Loading weights:  91%|█████████ | 307/339 [00:27<00:02, 13.62it/s]Loading weights:  93%|█████████▎| 315/339 [00:28<00:01, 16.99it/s]Loading weights:  94%|█████████▎| 317/339 [00:28<00:01, 11.55it/s]Loading weights:  94%|█████████▍| 319/339 [00:29<00:01, 11.10it/s]Loading weights:  96%|█████████▋| 327/339 [00:29<00:00, 15.39it/s]Loading weights:  97%|█████████▋| 329/339 [00:29<00:00, 14.89it/s]Loading weights:  99%|█████████▉| 336/339 [00:29<00:00, 20.78it/s]Loading weights: 100%|██████████| 339/339 [00:29<00:00, 11.46it/s]
+12:01:19 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Correctness_Theorem.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:03:21 INFO    Handling response for method window/logMessage
+12:03:22 INFO    Handling response for method window/showMessage
+12:03:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 0, 0
+12:03:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:03:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:03:46 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:03:46 WARNING Unhandled response for method PIDE/decoration
+12:03:58 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:10 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:46 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:50 INFO    Handling response for method PIDE/state_output
+12:04:51 INFO    Correctness_Theorem.thy: elaborated, attempting 1 theorems
+12:04:51 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2554, 121
+12:04:52 WARNING Unhandled response for method PIDE/decoration
+12:05:22 INFO    Handling response for method PIDE/state_output
+12:05:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/IMP_Noninterference_Extension/Correctness_Theorem.thy, 2555, 40
+12:05:22 WARNING Unhandled response for method PIDE/decoration
+12:05:42 INFO    PROVED Correctness_Theorem.thy:2551  1 steps 51s  lemma ctyping2_correct_aux: "\<lbrakk>(U, v) \<Turnstile> c 
+12:05:42 INFO              > by (drule ctyping2_correct_aux', simp)
+12:05:45 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/VEBT_Bounds.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:05:52 INFO    Handling response for method window/logMessage
+12:05:52 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 0, 0
+12:05:52 INFO    Handling response for method window/showMessage
+12:05:52 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:04 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:08 WARNING Unhandled response for method PIDE/decoration
+12:06:16 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:28 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:40 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:48 INFO    Handling response for method PIDE/state_output
+12:06:49 INFO    VEBT_Bounds.thy: elaborated, attempting 1 theorems
+12:06:49 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 491, 90
+12:06:52 INFO    Handling response for method PIDE/state_output
+12:06:54 WARNING Unhandled response for method PIDE/decoration
+12:06:55 WARNING Unhandled response for method PIDE/decoration
+12:07:09 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Van_Emde_Boas_Trees/VEBT_Bounds.thy, 492, 19
+12:07:11 WARNING Unhandled response for method PIDE/dynamic_output
+12:07:13 WARNING Unhandled response for method PIDE/dynamic_output
+12:07:14 INFO    Handling response for method textDocument/publishDiagnostics
+12:07:14 WARNING Unhandled response for method PIDE/decoration
+12:07:15 WARNING Unhandled response for method PIDE/decoration
+12:07:29 INFO         - VEBT_Bounds.thy:492  1 steps 40s  lemma minNull_bound: "T\<^sub>m\<^sub>i\<^sub>n\<^sub>N\<^su
+12:07:29 INFO              > by(induct t) auto
+12:07:29 INFO              ! error: Failed to finish proof\<^here>:
+goal (2 subgoals):
+ 1. \<And>x1 x2 x3 t.
+       (\<And>x3a. x3a \<in> s
+12:07:30 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Expressivity.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:07:38 INFO    Handling response for method window/logMessage
+12:07:38 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 0, 0
+12:07:38 INFO    Handling response for method window/showMessage
+12:07:38 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1443, 41
+12:07:39 INFO    Handling response for method textDocument/publishDiagnostics
+12:07:39 WARNING Unhandled response for method PIDE/decoration
+12:07:48 INFO    Handling response for method PIDE/state_output
+12:07:49 INFO    Handling response for method textDocument/publishDiagnostics
+12:07:50 WARNING Unhandled response for method PIDE/decoration
+12:07:50 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1443, 41
+12:08:00 INFO    Expressivity.thy: elaborated, attempting 1 theorems
+12:08:00 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1443, 41
+12:08:04 INFO    Handling response for method PIDE/state_output
+12:08:05 WARNING Unhandled response for method PIDE/decoration
+12:08:20 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1444, 13
+12:08:24 INFO    Handling response for method PIDE/state_output
+12:08:25 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1445, 28
+12:08:25 WARNING Unhandled response for method PIDE/decoration
+12:08:28 INFO    Handling response for method PIDE/state_output
+12:08:29 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/HyperHoareLogic/Expressivity.thy, 1446, 9
+12:08:29 WARNING Unhandled response for method PIDE/decoration
+12:08:32 WARNING Unhandled response for method PIDE/dynamic_output
+12:08:33 WARNING Unhandled response for method PIDE/decoration
+12:08:49 INFO    PROVED Expressivity.thy:1440  3 steps 48s  lemma encode_RUE_1_E2: assumes "encode_RUE_1 fn fn1 fn2 x t 
+12:08:49 INFO              > using assms
+12:08:49 INFO              > unfolding encode_RUE_1_def
+12:08:49 INFO              > by auto
+12:08:50 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/nest.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:08:58 INFO    Handling response for method window/logMessage
+12:08:58 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 0, 0
+12:08:58 INFO    Handling response for method window/showMessage
+12:08:58 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:09:02 INFO    Handling response for method window/logMessage
+12:09:10 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:09:17 WARNING Unhandled response for method PIDE/decoration
+12:09:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:09:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:09:46 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:09:58 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:10:10 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:10:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:10:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:10:36 INFO    Handling response for method PIDE/state_output
+12:10:37 INFO    nest.thy: elaborated, attempting 1 theorems
+12:10:37 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 313, 298
+12:10:42 INFO    Handling response for method PIDE/state_output
+12:10:43 WARNING Unhandled response for method PIDE/decoration
+12:10:46 WARNING Unhandled response for method PIDE/decoration
+12:10:57 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Allen_Calculus/nest.thy, 314, 10
+12:11:02 WARNING Unhandled response for method PIDE/dynamic_output
+12:11:03 WARNING Unhandled response for method PIDE/decoration
+12:11:06 WARNING Unhandled response for method PIDE/decoration
+12:11:17 INFO    PROVED nest.thy:314  1 steps 40s  lemma xj_set:"x \<in> {a |a. (a, j) \<in> e \<union> ov\<inv
+12:11:17 INFO              > by blast
+12:11:18 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Standard_Results.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:11:26 INFO    Handling response for method window/logMessage
+12:11:26 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Inductive_Inference/Standard_Results.thy, 0, 0
+12:11:26 INFO    Handling response for method window/showMessage
+12:11:26 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Inductive_Inference/Standard_Results.thy, 1201, 78
+12:11:27 INFO    Handling response for method textDocument/publishDiagnostics
+12:11:27 WARNING Unhandled response for method PIDE/decoration
+12:11:38 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Inductive_Inference/Standard_Results.thy, 1201, 78
+12:11:45 INFO    Handling response for method PIDE/state_output
+12:11:45 INFO    Handling response for method textDocument/publishDiagnostics
+12:11:46 INFO    Standard_Results.thy: elaborated, attempting 1 theorems
+12:11:46 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Inductive_Inference/Standard_Results.thy, 1201, 78
+12:11:46 WARNING Unhandled response for method PIDE/decoration
+12:11:47 WARNING Unhandled response for method PIDE/decoration
+12:11:51 INFO    Handling response for method PIDE/state_output
+12:11:52 WARNING Unhandled response for method PIDE/decoration
+12:12:06 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Inductive_Inference/Standard_Results.thy, 1202, 28
+12:12:09 WARNING Unhandled response for method PIDE/dynamic_output
+12:12:13 WARNING Unhandled response for method PIDE/decoration
+12:12:26 INFO    PROVED Standard_Results.thy:1202  1 steps 40s  lemma total2I [intro]: "(\<And>x y. f x y \<down>) \<Longrig
+12:12:26 INFO              > by (auto simp: total2_def)
+12:12:27 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/StutteringLemmas.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:12:34 INFO    Handling response for method window/logMessage
+12:12:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/TESL_Language/StutteringLemmas.thy, 0, 0
+12:12:35 INFO    Handling response for method window/showMessage
+12:12:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/TESL_Language/StutteringLemmas.thy, 232, 112
+12:12:35 INFO    Handling response for method textDocument/publishDiagnostics
+12:12:36 WARNING Unhandled response for method PIDE/decoration
+12:12:41 INFO    Handling response for method PIDE/state_output
+12:12:42 INFO    Handling response for method textDocument/publishDiagnostics
+12:12:42 INFO    StutteringLemmas.thy: elaborated, attempting 1 theorems
+12:12:42 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/TESL_Language/StutteringLemmas.thy, 232, 112
+12:12:42 WARNING Unhandled response for method PIDE/decoration
+12:12:42 INFO    Handling response for method PIDE/state_output
+12:12:44 WARNING Unhandled response for method PIDE/decoration
+12:13:02 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/TESL_Language/StutteringLemmas.thy, 233, 13
+12:13:02 INFO    Handling response for method PIDE/state_output
+12:13:03 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/TESL_Language/StutteringLemmas.thy, 234, 25
+12:13:03 WARNING Unhandled response for method PIDE/decoration
+12:13:04 WARNING Unhandled response for method PIDE/dynamic_output
+12:13:05 INFO    Handling response for method textDocument/publishDiagnostics
+12:13:05 WARNING Unhandled response for method PIDE/decoration
+12:13:23 INFO         - StutteringLemmas.thy:231  2 steps 42s  lemma no_tick_sub: assumes \<open>dilating f sub r\<close> s
+12:13:23 INFO              > using assms
+12:13:23 INFO              > by (auto simp: sub_def)
+12:13:23 INFO              ! error: Failed to finish proof\<^here>:
+goal (1 subgoal):
+ 1. dilating f sub r \<Longrightarrow> \<forall>n\<^s
+12:13:25 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/KoenigLemma.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:13:32 INFO    Handling response for method window/logMessage
+12:13:32 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Prop_Compactness/KoenigLemma.thy, 0, 0
+12:13:32 INFO    Handling response for method window/showMessage
+12:13:32 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Prop_Compactness/KoenigLemma.thy, 805, 50
+12:13:33 INFO    Handling response for method textDocument/publishDiagnostics
+12:13:33 WARNING Unhandled response for method PIDE/decoration
+12:13:44 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Prop_Compactness/KoenigLemma.thy, 805, 50
+12:13:45 INFO    Handling response for method PIDE/state_output
+12:13:46 INFO    Handling response for method textDocument/publishDiagnostics
+12:13:46 INFO    KoenigLemma.thy: elaborated, attempting 1 theorems
+12:13:46 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Prop_Compactness/KoenigLemma.thy, 805, 50
+12:13:46 WARNING Unhandled response for method PIDE/decoration
+12:13:48 INFO    Handling response for method PIDE/state_output
+12:13:50 WARNING Unhandled response for method PIDE/decoration
+12:14:06 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Prop_Compactness/KoenigLemma.thy, 806, 52
+12:14:08 WARNING Unhandled response for method PIDE/dynamic_output
+12:14:09 INFO    Handling response for method textDocument/publishDiagnostics
+12:14:09 WARNING Unhandled response for method PIDE/decoration
+12:14:26 INFO         - KoenigLemma.thy:805  1 steps 40s  lemma level_element: "\<forall>x\<in>A.\<exists>n. x\<in> le
+12:14:26 INFO              > by (metis Un_iff level_0 level_Suc mem_Collect_eq)
+12:14:26 INFO              ! error: Undefined fact: "level_0"\<^here>
+12:14:28 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Interleaving.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:14:35 INFO    Handling response for method window/logMessage
+12:14:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/OpSets/Interleaving.thy, 0, 0
+12:14:35 INFO    Handling response for method window/showMessage
+12:14:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/OpSets/Interleaving.thy, 483, 29
+12:14:43 INFO    Handling response for method PIDE/state_output
+12:14:44 INFO    Interleaving.thy: elaborated, attempting 1 theorems
+12:14:44 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/OpSets/Interleaving.thy, 483, 29
+12:14:44 WARNING Unhandled response for method PIDE/decoration
+12:14:46 INFO    Handling response for method PIDE/state_output
+12:14:46 WARNING Unhandled response for method PIDE/decoration
+12:15:04 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/OpSets/Interleaving.thy, 484, 13
+12:15:05 INFO    Handling response for method PIDE/state_output
+12:15:06 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/OpSets/Interleaving.thy, 485, 32
+12:15:06 WARNING Unhandled response for method PIDE/decoration
+12:15:08 WARNING Unhandled response for method PIDE/dynamic_output
+12:15:08 INFO    Handling response for method textDocument/publishDiagnostics
+12:15:08 WARNING Unhandled response for method PIDE/decoration
+12:15:26 INFO         - Interleaving.thy:481  2 steps 42s  lemma insert_seq_rem_last: assumes "insert_seq start (xs @ [
+12:15:26 INFO              > using assms
+12:15:26 INFO              > by (auto simp: insert_seq_def)
+12:15:26 INFO              ! error: Undefined fact: "insert_seq_def"\<^here>
+12:15:31 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Dedekind_Real.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:15:39 INFO    Handling response for method window/logMessage
+12:15:39 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Dedekind_Real/Dedekind_Real.thy, 0, 0
+12:15:39 INFO    Handling response for method window/showMessage
+12:15:39 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Dedekind_Real/Dedekind_Real.thy, 1102, 64
+12:15:41 WARNING Unhandled response for method PIDE/decoration
+12:15:46 INFO    Handling response for method PIDE/state_output
+12:15:47 INFO    Dedekind_Real.thy: elaborated, attempting 1 theorems
+12:15:47 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Dedekind_Real/Dedekind_Real.thy, 1102, 64
+12:15:47 WARNING Unhandled response for method PIDE/decoration
+12:15:49 WARNING Unhandled response for method PIDE/decoration
+12:15:54 INFO    Handling response for method PIDE/state_output
+12:15:55 WARNING Unhandled response for method PIDE/decoration
+12:16:07 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Dedekind_Real/Dedekind_Real.thy, 1103, 38
+12:16:09 WARNING Unhandled response for method PIDE/decoration
+12:16:14 INFO    Handling response for method PIDE/state_output
+12:16:14 WARNING Unhandled response for method PIDE/dynamic_output
+12:16:15 INFO    Handling response for method textDocument/publishDiagnostics
+12:16:15 WARNING Unhandled response for method PIDE/decoration
+12:16:27 INFO         - Dedekind_Real.thy:1103  1 steps 40s  lemma real_mult_assoc: "((z1::real) * z2) * z3 = z1 * (z2 * 
+12:16:27 INFO              > proof (induct z1 rule: slope_induct)
+12:16:27 INFO              ! error: Undefined fact: "slope_induct"\<^here>
+12:16:29 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Hood_Melville_Queue.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:16:36 INFO    Handling response for method window/logMessage
+12:16:36 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Hood_Melville_Queue/Hood_Melville_Queue.thy, 0, 0
+12:16:36 INFO    Handling response for method window/showMessage
+12:16:36 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Hood_Melville_Queue/Hood_Melville_Queue.thy, 233, 32
+12:16:37 INFO    Handling response for method textDocument/publishDiagnostics
+12:16:37 WARNING Unhandled response for method PIDE/decoration
+12:16:41 INFO    Handling response for method PIDE/state_output
+12:16:42 INFO    Hood_Melville_Queue.thy: elaborated, attempting 1 theorems
+12:16:42 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Hood_Melville_Queue/Hood_Melville_Queue.thy, 233, 32
+12:16:44 INFO    Handling response for method PIDE/state_output
+12:16:45 INFO    Handling response for method textDocument/publishDiagnostics
+12:16:45 WARNING Unhandled response for method PIDE/decoration
+12:17:02 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Hood_Melville_Queue/Hood_Melville_Queue.thy, 234, 26
+12:17:04 WARNING Unhandled response for method PIDE/dynamic_output
+12:17:05 INFO    Handling response for method textDocument/publishDiagnostics
+12:17:05 WARNING Unhandled response for method PIDE/decoration
+12:17:22 INFO         - Hood_Melville_Queue.thy:234  1 steps 40s  lemma invar_empty: "invar empty"
+12:17:22 INFO              > by(auto simp: invar_def)
+12:17:22 INFO              ! error: Failed to finish proof\<^here>:
+goal (7 subgoals):
+ 1. lenf Hood_Melville_Queue.empty =
+    length
+    
+12:17:23 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Paraconsistency.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:17:31 INFO    Handling response for method window/logMessage
+12:17:31 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Paraconsistency/Paraconsistency.thy, 0, 0
+12:17:31 INFO    Handling response for method window/showMessage
+12:17:31 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Paraconsistency/Paraconsistency.thy, 553, 83
+12:17:34 INFO    Handling response for method PIDE/state_output
+12:17:35 INFO    Paraconsistency.thy: elaborated, attempting 1 theorems
+12:17:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Paraconsistency/Paraconsistency.thy, 553, 83
+12:17:36 WARNING Unhandled response for method PIDE/decoration
+12:17:39 INFO    Handling response for method PIDE/state_output
+12:17:40 WARNING Unhandled response for method PIDE/decoration
+12:17:42 WARNING Unhandled response for method PIDE/decoration
+12:17:44 WARNING Unhandled response for method PIDE/decoration
+12:17:56 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Paraconsistency/Paraconsistency.thy, 554, 59
+12:17:58 WARNING Unhandled response for method PIDE/dynamic_output
+12:17:58 WARNING Unhandled response for method PIDE/dynamic_output
+12:17:59 INFO    Handling response for method textDocument/publishDiagnostics
+12:17:59 WARNING Unhandled response for method PIDE/decoration
+12:18:01 WARNING Unhandled response for method PIDE/decoration
+12:18:16 INFO         - Paraconsistency.thy:554  1 steps 40s  proposition assumes "valid_in U p" and "valid_in U (Imp' p q
+12:18:16 INFO              > by (meson assms(1) assms(2) valid_in_def valid_imp_trans)
+12:18:16 INFO              ! error: Undefined fact: "valid_imp_trans"\<^here>
+12:18:17 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/NREST.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:18:24 INFO    Handling response for method window/logMessage
+12:18:24 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 0, 0
+12:18:24 INFO    Handling response for method window/showMessage
+12:18:24 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:18:36 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:18:42 WARNING Unhandled response for method PIDE/decoration
+12:18:48 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:18:55 INFO    Handling response for method textDocument/publishDiagnostics
+12:19:00 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:19:12 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:19:14 INFO    Handling response for method PIDE/state_output
+12:19:15 INFO    NREST.thy: elaborated, attempting 1 theorems
+12:19:15 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 191, 67
+12:19:15 WARNING Unhandled response for method PIDE/decoration
+12:19:17 INFO    Handling response for method PIDE/state_output
+12:19:18 WARNING Unhandled response for method PIDE/decoration
+12:19:19 WARNING Unhandled response for method PIDE/dynamic_output
+12:19:19 WARNING Unhandled response for method PIDE/decoration
+12:19:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 192, 28
+12:19:35 WARNING Unhandled response for method PIDE/dynamic_output
+12:19:37 INFO    Handling response for method PIDE/state_output
+12:19:37 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 193, 24
+12:19:39 INFO    Handling response for method PIDE/state_output
+12:19:40 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 194, 41
+12:19:42 INFO    Handling response for method PIDE/state_output
+12:19:43 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 195, 16
+12:19:45 INFO    Handling response for method PIDE/state_output
+12:19:45 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/NREST/NREST.thy, 196, 24
+12:19:47 INFO    Handling response for method PIDE/state_output
+12:19:47 WARNING Unhandled response for method PIDE/dynamic_output
+12:19:48 INFO    Handling response for method textDocument/publishDiagnostics
+12:19:48 WARNING Unhandled response for method PIDE/decoration
+12:19:49 WARNING Unhandled response for method PIDE/decoration
+12:19:51 WARNING Unhandled response for method PIDE/decoration
+12:19:52 WARNING Unhandled response for method PIDE/decoration
+12:20:05 INFO         - NREST.thy:192  5 steps 51s  lemma FAILT_SUP: "(FAILT \<in> X) \<Longrightarrow> Sup X = 
+12:20:05 INFO              > apply (rule order.antisym)
+12:20:05 INFO              > apply (rule Sup_least)
+12:20:05 INFO              > apply (rule_tac y = "x" in order_trans)
+12:20:05 INFO              > apply simp_all
+12:20:05 INFO              > apply (rule Sup_upper)
+12:20:05 INFO              ! error: Failed to apply proof method\<^here>:
+goal (1 subgoal):
+ 1. FAILT \<in> X \<Longrightarrow> \<Squnion> 
+12:20:07 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/secTypes.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:20:14 INFO    Handling response for method window/logMessage
+12:20:14 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/VolpanoSmith/secTypes.thy, 0, 0
+12:20:14 INFO    Handling response for method window/showMessage
+12:20:14 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/VolpanoSmith/secTypes.thy, 95, 106
+12:20:16 WARNING Unhandled response for method PIDE/decoration
+12:20:20 INFO    Handling response for method PIDE/state_output
+12:20:20 WARNING Unhandled response for method PIDE/dynamic_output
+12:20:21 WARNING Unhandled response for method PIDE/decoration
+12:20:21 INFO    secTypes.thy: elaborated, attempting 1 theorems
+12:20:21 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/VolpanoSmith/secTypes.thy, 95, 106
+12:20:21 WARNING Unhandled response for method PIDE/dynamic_output
+12:20:22 INFO    Handling response for method PIDE/state_output
+12:20:22 WARNING Unhandled response for method PIDE/dynamic_output
+12:20:23 WARNING Unhandled response for method PIDE/decoration
+12:20:41 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/VolpanoSmith/secTypes.thy, 96, 13
+12:20:41 WARNING Unhandled response for method PIDE/dynamic_output
+12:20:42 INFO    Handling response for method PIDE/state_output
+12:20:43 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/VolpanoSmith/secTypes.thy, 97, 39
+12:20:44 WARNING Unhandled response for method PIDE/dynamic_output
+12:20:45 INFO    Handling response for method textDocument/publishDiagnostics
+12:20:45 WARNING Unhandled response for method PIDE/decoration
+12:21:03 INFO         - secTypes.thy:94  2 steps 42s  lemma exprBinopTypeable: assumes "\<Gamma> \<turnstile> e1 \
+12:21:03 INFO              > using assms
+12:21:03 INFO              > by (induction rule: expr.induct) auto
+12:21:03 INFO              ! error: Failed to finish proof\<^here>:
+goal (6 subgoals):
+ 1. \<And>x. \<Gamma> \<turnstile> e1 \<guillemotlef
+12:21:04 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/SC_Depth.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:21:12 INFO    Handling response for method window/logMessage
+12:21:12 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 0, 0
+12:21:12 INFO    Handling response for method window/showMessage
+12:21:12 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 138, 55
+12:21:13 INFO    Handling response for method textDocument/publishDiagnostics
+12:21:13 WARNING Unhandled response for method PIDE/decoration
+12:21:24 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 138, 55
+12:21:29 INFO    Handling response for method textDocument/publishDiagnostics
+12:21:29 WARNING Unhandled response for method PIDE/decoration
+12:21:29 INFO    Handling response for method textDocument/publishDiagnostics
+12:21:36 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 138, 55
+12:21:37 WARNING Unhandled response for method PIDE/decoration
+12:21:39 INFO    Handling response for method PIDE/state_output
+12:21:40 INFO    SC_Depth.thy: elaborated, attempting 1 theorems
+12:21:40 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 138, 55
+12:21:41 WARNING Unhandled response for method PIDE/decoration
+12:21:42 INFO    Handling response for method PIDE/state_output
+12:21:43 WARNING Unhandled response for method PIDE/decoration
+12:22:00 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 139, 13
+12:22:01 WARNING Unhandled response for method PIDE/decoration
+12:22:03 INFO    Handling response for method PIDE/state_output
+12:22:03 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Propositional_Proof_Systems/SC_Depth.thy, 140, 68
+12:22:03 WARNING Unhandled response for method PIDE/decoration
+12:22:05 WARNING Unhandled response for method PIDE/decoration
+12:22:06 INFO    Handling response for method PIDE/state_output
+12:22:06 WARNING Unhandled response for method PIDE/dynamic_output
+12:22:07 INFO    Handling response for method textDocument/publishDiagnostics
+12:22:07 WARNING Unhandled response for method PIDE/decoration
+12:22:23 INFO         - SC_Depth.thy:137  2 steps 44s  lemma ImpR_inv': assumes "\<Gamma> \<Rightarrow> Imp F G,\<D
+12:22:23 INFO              > using assms
+12:22:23 INFO              > proof (induction arbitrary: \<Gamma> \<Delta> n rule: Assm.induct)
+12:22:23 INFO              ! error: Undefined fact: "Assm.induct"\<^here>
+12:22:25 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/FOL_Axiomatic_Variant.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:22:32 INFO    Handling response for method window/logMessage
+12:22:32 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/FOL_Axiomatic/FOL_Axiomatic_Variant.thy, 0, 0
+12:22:32 INFO    Handling response for method window/showMessage
+12:22:33 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/FOL_Axiomatic/FOL_Axiomatic_Variant.thy, 484, 110
+12:22:39 INFO    Handling response for method PIDE/state_output
+12:22:40 INFO    FOL_Axiomatic_Variant.thy: elaborated, attempting 1 theorems
+12:22:40 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/FOL_Axiomatic/FOL_Axiomatic_Variant.thy, 484, 110
+12:22:41 WARNING Unhandled response for method PIDE/decoration
+12:22:44 INFO    Handling response for method PIDE/state_output
+12:22:46 WARNING Unhandled response for method PIDE/decoration
+12:23:00 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/FOL_Axiomatic/FOL_Axiomatic_Variant.thy, 485, 23
+12:23:04 WARNING Unhandled response for method PIDE/dynamic_output
+12:23:04 WARNING Unhandled response for method PIDE/dynamic_output
+12:23:05 INFO    Handling response for method textDocument/publishDiagnostics
+12:23:05 WARNING Unhandled response for method PIDE/decoration
+12:23:20 INFO         - FOL_Axiomatic_Variant.thy:485  1 steps 40s  lemma finite_vars_extend [simp]: \<open>finite (vars S) \<Lo
+12:23:20 INFO              > by (induction n) auto
+12:23:20 INFO              ! error: Failed to finish proof\<^here>:
+goal (1 subgoal):
+ 1. \<And>n. finite (vars (extend S f n)) \<Longright
+12:23:22 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Nominal2_Abs.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:23:29 INFO    Handling response for method window/logMessage
+12:23:29 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 0, 0
+12:23:30 INFO    Handling response for method window/showMessage
+12:23:30 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 578, 75
+12:23:34 WARNING Unhandled response for method PIDE/decoration
+12:23:42 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 578, 75
+12:23:54 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 578, 75
+12:23:58 INFO    Handling response for method PIDE/state_output
+12:23:59 INFO    Nominal2_Abs.thy: elaborated, attempting 1 theorems
+12:23:59 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 578, 75
+12:23:59 WARNING Unhandled response for method PIDE/decoration
+12:23:59 INFO    Handling response for method textDocument/publishDiagnostics
+12:23:59 INFO    Handling response for method textDocument/publishDiagnostics
+12:24:01 INFO    Handling response for method PIDE/state_output
+12:24:02 WARNING Unhandled response for method PIDE/decoration
+12:24:19 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Nominal2/Nominal2_Abs.thy, 579, 27
+12:24:21 WARNING Unhandled response for method PIDE/dynamic_output
+12:24:21 WARNING Unhandled response for method PIDE/dynamic_output
+12:24:22 INFO    Handling response for method textDocument/publishDiagnostics
+12:24:22 WARNING Unhandled response for method PIDE/decoration
+12:24:39 INFO         - Nominal2_Abs.thy:577  1 steps 40s  lemma permute_Abs_lst[simp]: fixes x::"'a::pt" shows "(p \<b
+12:24:39 INFO              > by(simp add: permute_def)
+12:24:39 INFO              ! error: Undefined fact: "permute_def"\<^here>
+12:24:40 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Example_Hybrid_Logic.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:24:47 INFO    Handling response for method window/logMessage
+12:24:47 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 0, 0
+12:24:48 INFO    Handling response for method window/showMessage
+12:24:48 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 731, 53
+12:25:00 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 731, 53
+12:25:06 INFO    Handling response for method PIDE/state_output
+12:25:07 INFO    Example_Hybrid_Logic.thy: elaborated, attempting 1 theorems
+12:25:07 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 731, 53
+12:25:13 INFO    Handling response for method PIDE/state_output
+12:25:15 WARNING Unhandled response for method PIDE/decoration
+12:25:27 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 732, 9
+12:25:33 INFO    Handling response for method PIDE/state_output
+12:25:34 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 733, 42
+12:25:34 WARNING Unhandled response for method PIDE/decoration
+12:25:40 INFO    Handling response for method PIDE/state_output
+12:25:40 WARNING Unhandled response for method PIDE/dynamic_output
+12:25:41 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Synthetic_Completeness/Example_Hybrid_Logic.thy, 734, 30
+12:25:41 WARNING Unhandled response for method PIDE/dynamic_output
+12:25:48 INFO    Handling response for method PIDE/state_output
+12:25:48 WARNING Unhandled response for method PIDE/dynamic_output
+12:25:48 INFO    Handling response for method textDocument/publishDiagnostics
+12:25:49 WARNING Unhandled response for method PIDE/decoration
+12:26:01 INFO         - Example_Hybrid_Logic.thy:729  3 steps 54s  theorem completeness: fixes p :: \<open>('i, 'p) fm\<close> 
+12:26:01 INFO              > proof -
+12:26:01 INFO              > have \<open>finite (subs (i, p))\<close>
+12:26:01 INFO              > using assms(2,3) finite_subs
+12:26:01 INFO              ! error: Undefined fact: "finite_subs"\<^here>
+12:26:03 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Points.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:26:10 INFO    Handling response for method window/logMessage
+12:26:10 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 0, 0
+12:26:10 INFO    Handling response for method window/showMessage
+12:26:10 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 401, 19
+12:26:13 WARNING Unhandled response for method PIDE/decoration
+12:26:17 WARNING Unhandled response for method PIDE/decoration
+12:26:22 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 401, 19
+12:26:30 INFO    Handling response for method PIDE/state_output
+12:26:31 INFO    Points.thy: elaborated, attempting 1 theorems
+12:26:31 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 401, 19
+12:26:32 WARNING Unhandled response for method PIDE/decoration
+12:26:44 INFO    Handling response for method PIDE/state_output
+12:26:45 WARNING Unhandled response for method PIDE/decoration
+12:26:51 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 402, 9
+12:26:52 WARNING Unhandled response for method PIDE/decoration
+12:27:04 INFO    Handling response for method PIDE/state_output
+12:27:05 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 403, 31
+12:27:05 WARNING Unhandled response for method PIDE/decoration
+12:27:06 WARNING Unhandled response for method PIDE/decoration
+12:27:20 INFO    Handling response for method PIDE/state_output
+12:27:20 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:21 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 404, 27
+12:27:21 WARNING Unhandled response for method PIDE/decoration
+12:27:21 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:22 WARNING Unhandled response for method PIDE/decoration
+12:27:34 INFO    Handling response for method PIDE/state_output
+12:27:34 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:34 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:35 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/No_FTL_observers_Gen_Rel/Points.thy, 405, 6
+12:27:35 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:36 WARNING Unhandled response for method PIDE/decoration
+12:27:48 INFO    Handling response for method PIDE/state_output
+12:27:48 WARNING Unhandled response for method PIDE/dynamic_output
+12:27:49 INFO    Handling response for method textDocument/publishDiagnostics
+12:27:49 WARNING Unhandled response for method PIDE/decoration
+12:27:55 INFO         - Points.thy:400  4 steps 84s  lemma lemSpatialNullImpliesSpatialOrigin: assumes "sNorm2 s 
+12:27:55 INFO              > proof -
+12:27:55 INFO              > have "s = sScale (sNorm s) s"
+12:27:55 INFO              > by (simp add: sScale_def)
+12:27:55 INFO              > also
+12:27:55 INFO              ! error: Undefined fact: "sScale_def"\<^here>
+12:27:56 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/Term_Class.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:28:04 INFO    Handling response for method window/logMessage
+12:28:04 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 0, 0
+12:28:04 INFO    Handling response for method window/showMessage
+12:28:04 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 856, 110
+12:28:16 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 856, 110
+12:28:20 WARNING Unhandled response for method PIDE/decoration
+12:28:28 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 856, 110
+12:28:30 INFO    Handling response for method PIDE/state_output
+12:28:31 INFO    Term_Class.thy: elaborated, attempting 1 theorems
+12:28:31 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 856, 110
+12:28:31 WARNING Unhandled response for method PIDE/decoration
+12:28:32 WARNING Unhandled response for method PIDE/decoration
+12:28:36 INFO    Handling response for method PIDE/state_output
+12:28:37 WARNING Unhandled response for method PIDE/decoration
+12:28:51 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/Higher_Order_Terms/Term_Class.thy, 857, 75
+12:28:56 WARNING Unhandled response for method PIDE/dynamic_output
+12:28:57 WARNING Unhandled response for method PIDE/dynamic_output
+12:28:58 INFO    Handling response for method textDocument/publishDiagnostics
+12:28:58 WARNING Unhandled response for method PIDE/decoration
+12:29:11 INFO         - Term_Class.thy:857  1 steps 40s  lemma consts_list_comb: "consts (list_comb f xs) = consts f 
+12:29:11 INFO              > by (induction xs rule: rev_induct) (auto simp: list_comb_def ffUnion_def)
+12:29:11 INFO              ! error: Failed to finish proof\<^here>:
+goal (4 subgoals):
+ 1. \<And>x. x |\<in>| Abs_fset {} \<Longrightarrow>
+12:29:13 INFO    Starting Isabelle with /home/cuc/pf18/isabelle-emacs/bin/isabelle vscode_server -o vscode_pide_extensions -v -L data/logs/completion/ResTerm.log -o vscode_html_output=false -l HOL -d /cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys -o vscode_html_output=true
+12:29:20 INFO    Handling response for method window/logMessage
+12:29:20 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/ProcessComposition/ResTerm.thy, 0, 0
+12:29:20 INFO    Handling response for method window/showMessage
+12:29:20 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/ProcessComposition/ResTerm.thy, 101, 14
+12:29:23 INFO    Handling response for method PIDE/state_output
+12:29:24 INFO    ResTerm.thy: elaborated, attempting 1 theorems
+12:29:24 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/ProcessComposition/ResTerm.thy, 101, 14
+12:29:24 WARNING Unhandled response for method PIDE/decoration
+12:29:26 INFO    Handling response for method PIDE/state_output
+12:29:26 WARNING Unhandled response for method PIDE/decoration
+12:29:44 INFO    Sending caret update request: file:///cluster/home/cuc/pf18/Proof-Automation/src/afp-2026-06-29/thys/ProcessComposition/ResTerm.thy, 102, 28
+12:29:46 WARNING Unhandled response for method PIDE/dynamic_output
+12:29:46 INFO    Handling response for method textDocument/publishDiagnostics
+12:29:46 WARNING Unhandled response for method PIDE/decoration
+12:30:04 INFO         - ResTerm.thy:101  1 steps 40s  lemma refl [simp]: "a \<sim> a"
+12:30:04 INFO              > by (simp add: twiddle_def)
+12:30:04 INFO              ! error: Undefined fact: "twiddle_def"\<^here>
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x76938667d6c0>
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/asyncio/base_subprocess.py", line 126, in __del__
+    self.close()
+  File "/usr/lib/python3.12/asyncio/base_subprocess.py", line 104, in close
+    proto.pipe.close()
+  File "/usr/lib/python3.12/asyncio/unix_events.py", line 568, in close
+    self._close(None)
+  File "/usr/lib/python3.12/asyncio/unix_events.py", line 592, in _close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 795, in call_soon
+    self._check_closed()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 541, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
