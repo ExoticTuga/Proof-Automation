@@ -1,132 +1,133 @@
-# AFP proof-state harvester
+# Fine-tuning a Language Model for Isabelle/HOL Proof Automation
 
-Extracts `(proof state → tactic → new proof state)` training rows from Isabelle
-theory files by driving `isabelle-emacs` over LSP.
+MSc dissertation project. Extracts a corpus of proof states from the Archive
+of Formal Proofs, fine-tunes Qwen2.5-Coder-7B to predict the next Isar
+command, and evaluates whether Isabelle accepts what the model writes.
 
-**Status: working end to end, not yet run at scale.** This is step one of a
-larger fine-tuning project. See `PROGRESS.md` for how it works, why the design
-is what it is, and what remains.
+**Start at [`index.html`](index.html)** for an annotated guide to every file.
 
-## Layout
+## Results
+
+All figures are on held-out AFP entries absent from training.
+
+| | Base Qwen2.5-Coder-7B | Fine-tuned |
+|---|---|---|
+| Proofs accepted by Isabelle | 0 / 19 | **4 / 20** |
+| Exact match (70,242 steps) | 5.1% | **35.9%** |
+| Command match (70,242 steps) | 12.6% | **68.2%** |
+
+## The problem
+
+The AFP contains proof *scripts* but not proof *states*. A `.thy` file records
+the tactics a human wrote; the intermediate goals those tactics act upon exist
+only inside Isabelle while the file is being checked, and are never written to
+disk. Since the training signal maps a proof state to the tactic applied to
+it, the states must be recovered by re-executing the corpus under
+instrumentation.
+
+`afp_harvest.py` does this by driving Isabelle over the Language Server
+Protocol, emulating an interactive editor: it moves a cursor through each
+theory file and records the proof state Isabelle reports at each position.
 
 ```
-afp_harvest.py        main script
-panel_text.py         HTML → text (imported by afp_harvest, must sit beside it)
-validate_dataset.py   quality checks — run after every harvest
-probe_state.py        standalone LSP diagnostic, for debugging only
-testbed/thys/Sanity/  tiny test theory (Sanity.thy + ROOT), imports only Main
-afp-2026-06-29/thys/  the archive
-PROGRESS.md           full write-up
+   theory file            cursor position          Isabelle's response
+   ─────────────────      ───────────────          ───────────────────
+   lemma rev_rev: …       end of `lemma …`     →   goal (1 subgoal):
+                                                    1. rev (rev xs) = xs
+     apply (induct xs)    end of `apply …`     →   goal (2 subgoals): …
+     apply simp           end of `apply simp`  →   No subgoals!
+   done                   end of `done`        →   (no output)
 ```
 
-Input directories must be laid out as `<afp>/<Session>/<Theory>.thy` — pass the
-level *above* the session folders (`--afp afp-2026-06-29/thys`).
+## Reproducing
 
-## Quick start
+### Requirements
 
-Offline, no Isabelle needed:
+- Python 3.12, `pip install -r requirements.txt`
+- [isabelle-emacs](https://github.com/m-fleury/isabelle-emacs), revision
+  `Isabelle2025-2-vsce` — the upstream Isabelle VSCode server does not send the
+  PIDE notifications this depends on
+- The AFP snapshot `2026-06-29` from [isa-afp.org](https://www.isa-afp.org/)
+- For training and evaluation: an 80 GB GPU (3 for training)
+
+### Offline checks — no Isabelle, no GPU
 
 ```bash
-python afp_harvest.py --self-test
-python afp_harvest.py --afp testbed/thys --mock --out out_mock --log-dir out_logs
+python src/afp_harvest.py --self-test
 ```
 
-Live sanity check (needs Isabelle, no AFP build — `Sanity.thy` imports only
-`Main`, which separates "LSP wiring works" from "heaps are built"):
+35 assertions over the Isar lexer, cursor positioning, proof segmentation and
+training-pair construction. Each of the three extraction defects encountered
+during development is covered by a regression case.
 
 ```bash
-python afp_harvest.py \
-  --afp testbed/thys \
-  --isabelle /path/to/isabelle-emacs/bin/isabelle \
-  --logic HOL \
-  --out out_sanity --log-dir out_logs --trace
+python src/afp_harvest.py --afp <afp>/thys --show-blocks > blocks.txt
+grep -c "NOT PROBED" blocks.txt     # expect 0
 ```
 
-Expect 17 states, 13 transitions.
+Checks the central structural invariant — *every proof block must terminate at
+a position some cursor visits* — across the entire archive. Verified on all
+249,241 proof blocks in 6,857 theory files.
 
-Real AFP entry:
+### Full pipeline
 
 ```bash
-python afp_harvest.py \
-  --afp afp-2026-06-29/thys \
-  --include Depth-First-Search \
-  --isabelle /path/to/isabelle-emacs/bin/isabelle \
-  --session-dirs afp-2026-06-29/thys \
-  --out out_afp --log-dir out_logs -v
+# 1. partition the corpus by entry, stratified, fixed seed
+python src/split_entries.py --afp <afp>/thys --test-frac 0.2 \
+       --only-parents HOL --out-dir split_hol
 
-python validate_dataset.py out_afp --sample 3
+# 2. extract proof states (Slurm job array; ~9 h across 14 tasks)
+sbatch harvest_array.sbatch
+python src/merge_shards.py data/train --out data/train_merged \
+       --expect-entries split_hol/train_entries.txt \
+       --test-entries  split_hol/test_entries.txt
+python src/validate_dataset.py data/train_merged
+
+# 3. build training pairs
+python src/prepare_dataset.py data/train_merged/states.jsonl --out data/sft
+
+# 4. fine-tune (3 x A100 80GB, ~52 h)
+sbatch train.sbatch
+
+# 5. evaluate
+sbatch eval.sbatch                          # per-step
+MODEL=runs/qwen7b/final sbatch completion.sbatch   # proof completion
 ```
 
-Expect 99 states, 77 transitions, 100% alignment.
+## Notes on the implementation
 
-Omit `--logic` on AFP entries so the parent session is read from `ROOT`.
-`--session-dirs` puts the archive on Isabelle's search path so imports resolve.
+Three points cost more to discover than the code suggests.
 
-## Output
+**The state panel is a separate LSP channel from the output panel.**
+`PIDE/dynamic_output` carries proof hints and completed theorems, and is
+*empty at exactly the tactic applications that matter*. The proof state comes
+from `PIDE/state_output`, which must be instantiated with an explicit
+`PIDE/state_init` request before it emits anything.
 
-JSONL (one record per line — newlines inside proof states are escaped, and the
-format streams directly into training pipelines).
+**HTML output is mandatory in this Isabelle revision.** The plain-text
+rendering path attaches a decoration object the JSON encoder cannot serialise
+(`Bad JSON value: …Lambda`), so no state is emitted at all. The extraction
+requests HTML and converts it back, which is lossless: the pretty-printer
+breaks lines before rendering, so the HTML's text content is the plain-text
+state.
+
+**Isabelle theories can define their own commands.** A theory header may
+declare `keywords "sepref_definition" :: thy_goal`, making that a goal-opening
+command for every importing theory. No fixed keyword list can anticipate
+these, and an unrecognised goal-opener loses an entire theory's context. The
+extraction reads these declarations from the corpus, as Isabelle itself does.
+
+## Repository layout
 
 ```
-out_dir/states.jsonl              the training rows: prefix / state / continuation
-out_dir/transitions.jsonl         state_before / tactic / state_after
-out_dir/states.checkpoint.jsonl   crash log, used by --resume; delete to restart
+src/                pipeline: extraction, dataset prep, training, evaluation
+tools/              standalone diagnostics
+*.sbatch            Slurm job scripts
+split_hol/          the train/test partition (which entries were held out)
+testbed/            minimal theory fixture for testing without AFP heaps
+results/            raw model outputs from every evaluation run
+docs/               project proposal and critical review
 ```
 
-
-**`states.jsonl` is the training file.** One record (abridged):
-
-```json
-{"line": 11, "command": "apply", "in_proof": true, "offset": 372,
- "prefix": "lemma rev_rev [simp]: \"rev (rev xs) = xs\"\n  apply (induct xs)",
- "state": "proof (prove)\ngoal (2 subgoals):\n 1. rev (rev []) = []\n 2. …",
- "continuation": "\n   apply simp\n  apply simp\n  done"}
-```
-
-The caret sits at the **end** of a command, so `prefix` ends with the command
-just executed, `state` is the goal it produced, and `continuation` begins with
-the command to predict.
-
-`continuation` is scoped to the **enclosing proof**, so it is empty exactly
-when the proof is finished — that is the stop signal. `--prefix-scope file`
-widens `prefix` to the whole theory (much larger files).
-
-**`in_proof` must be filtered on.** Rows outside any proof (`theory`,
-`imports`, `begin`, `end`) also have an empty continuation, but that is not a
-proof-finished signal. Drop `in_proof: false` before training.
-
-## Flags
-
-| Flag | Purpose |
-|---|---|
-| `--include REGEX` | only paths matching |
-| `--limit N` | only the first N files |
-| `--resume` | skip files already in the checkpoint |
-| `--mode commands\|tokens` | cursor per Isar command (default) or per whitespace token |
-| `--prefix-scope proof\|file` | context window for `prefix` (default proof) |
-| `--format jsonl\|json\|both` | output encoding (default jsonl) |
-| `--settle` / `--quiet` | timing knobs (2.0 / 0.35 s) |
-| `--trace` | print every cursor stop and the state it returned |
-| `--dump-raw` | log every LSP message with timings |
-| `-o NAME=VALUE` | extra Isabelle option, repeatable |
-| `-v` | one log line per state |
-
-## Two things worth noting
-
-**We read `PIDE/state_output`, not `PIDE/dynamic_output`.** They are different
-panels. `dynamic_output` is the *output* panel — hints and the finished theorem
-— and it is **empty at exactly the `apply` steps you need**. The state panel
-also has to be switched on with a `PIDE/state_init` request before it sends
-anything.
-
-**`-o vscode_html_output=true` is mandatory** and is appended automatically.
-The plain-text path crashes server-side in `Isabelle2025-2-vsce`
-(`Bad JSON value: …Lambda`); `panel_text.py` converts the HTML back, losslessly.
-
-## Not done yet
-
-- One Isabelle process per file (30–60 s startup each) — biggest speedup available
-- Session heaps: 313 of 999 entries need only `HOL`; start there
-- Filtering `sorry`/`oops` proofs and error states out of the training rows
-
-Details and priorities in `PROGRESS.md` §7.
+The AFP corpus, extracted data and model checkpoints are excluded for size and
+are reproducible from the above.

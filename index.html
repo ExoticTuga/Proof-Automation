@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corpus Index — Fine-tuning a Language Model for Isabelle/HOL Proof Automation</title>
+<style>
+  :root {
+    --fg: #1a1a1a; --muted: #5a5a5a; --line: #d8d8d8;
+    --bg: #ffffff; --accent: #1a4f8a; --code-bg: #f4f4f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e8e8e8; --muted: #a0a0a0; --line: #3a3a3a;
+      --bg: #161616; --accent: #79b0e8; --code-bg: #242424;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+    color: var(--fg); background: var(--bg);
+    max-width: 900px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem;
+  }
+  h1 { font-size: 1.6rem; line-height: 1.3; margin: 0 0 .3rem; }
+  h2 {
+    font-size: 1.15rem; margin: 2.5rem 0 .5rem;
+    padding-bottom: .35rem; border-bottom: 2px solid var(--line);
+  }
+  h3 { font-size: 1rem; margin: 1.5rem 0 .4rem; color: var(--muted); }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  table { border-collapse: collapse; width: 100%; margin: .75rem 0 1.25rem; }
+  th, td {
+    text-align: left; padding: .5rem .6rem;
+    border-bottom: 1px solid var(--line); vertical-align: top;
+  }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em;
+       color: var(--muted); font-weight: 600; }
+  td:first-child { white-space: nowrap; width: 1%; }
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .88em;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .results {
+    background: var(--code-bg); border-radius: 6px;
+    padding: .5rem 1rem; margin: 1rem 0;
+  }
+  .results table { margin: .5rem 0; }
+  .results td:first-child { width: auto; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .win { font-weight: 700; }
+  .note {
+    border-left: 3px solid var(--line); padding: .1rem 0 .1rem 1rem;
+    margin: 1rem 0; color: var(--muted); font-size: .95rem;
+  }
+  footer {
+    margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: .875rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>Fine-tuning a Language Model for Isabelle/HOL Proof Automation</h1>
+<p class="sub">
+  Corpus index &mdash; MSc dissertation project<br>
+  Pedro Santos &middot; University of Kent &middot; 2026
+</p>
+
+<p>
+  This corpus contains the software, data artefacts and supporting documents
+  produced by the project. The dissertation is submitted separately.
+</p>
+
+<div class="results">
+  <strong>Headline results.</strong> All figures are on held-out AFP entries
+  the model never saw during training.
+  <table>
+    <tr><th>Metric</th><th class="num">Base Qwen2.5-Coder-7B</th><th class="num">Fine-tuned</th></tr>
+    <tr><td>Proofs accepted by Isabelle</td><td class="num">0 / 19</td><td class="num win">4 / 20</td></tr>
+    <tr><td>Exact match (70,242 steps)</td><td class="num">5.1%</td><td class="num win">35.9%</td></tr>
+    <tr><td>Command match (70,242 steps)</td><td class="num">12.6%</td><td class="num win">68.2%</td></tr>
+  </table>
+</div>
+
+<h2>1. Pipeline source</h2>
+
+<h3>Dataset construction</h3>
+<p>
+  The Archive of Formal Proofs contains proof <em>scripts</em> but not proof
+  <em>states</em>: the intermediate goals a tactic acts upon exist only inside
+  Isabelle during checking. These tools recover them by driving Isabelle over
+  the Language Server Protocol, emulating an interactive editor.
+</p>
+<table>
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr>
+    <td><a href="src/afp_harvest.py"><code>src/afp_harvest.py</code></a></td>
+    <td>Main extraction tool. Lexes Isar outer syntax, computes cursor
+        positions, drives Isabelle over LSP, records the proof state at each
+        position. Includes a 35-assertion offline test suite
+        (<code>--self-test</code>) and a static segmentation check
+        (<code>--show-blocks</code>).</td>
+  </tr>
+  <tr>
+    <td><a href="src/panel_text.py"><code>src/panel_text.py</code></a></td>
+    <td>Converts Isabelle's HTML panel output back to plain text. Required
+        because the plain-text rendering path fails to serialise in the
+        Isabelle revision used.</td>
+  </tr>
+  <tr>
+    <td><a href="src/split_entries.py"><code>src/split_entries.py</code></a></td>
+    <td>Stratified train/test partition over AFP <em>entries</em>, sampled
+        within strata so both partitions span comparable subject matter.</td>
+  </tr>
+  <tr>
+    <td><a href="src/merge_shards.py"><code>src/merge_shards.py</code></a></td>
+    <td>Combines parallel extraction output; checks for duplicates, missing
+        shards, coverage, and test-set leakage.</td>
+  </tr>
+  <tr>
+    <td><a href="src/validate_dataset.py"><code>src/validate_dataset.py</code></a></td>
+    <td>Quality checks on extracted data: positional alignment against source,
+        segmentation consistency, and aggregate distributions.</td>
+  </tr>
+  <tr>
+    <td><a href="src/prepare_dataset.py"><code>src/prepare_dataset.py</code></a></td>
+    <td>Converts proof states into prompt/target training pairs, with
+        filtering, deduplication and left-truncation of context.</td>
+  </tr>
+</table>
+
+<h3>Training and evaluation</h3>
+<table>
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr>
+    <td><a href="src/train_sft.py"><code>src/train_sft.py</code></a></td>
+    <td>Full-parameter fine-tuning of Qwen2.5-Coder-7B with FSDP sharding.
+        Loss is masked to the completion only.</td>
+  </tr>
+  <tr>
+    <td><a href="src/eval_generate.py"><code>src/eval_generate.py</code></a></td>
+    <td>Per-step evaluation: generates the next command for each held-out
+        position and scores exact match, command match and per-command
+        accuracy.</td>
+  </tr>
+  <tr>
+    <td><a href="src/proof_completion.py"><code>src/proof_completion.py</code></a></td>
+    <td><strong>Proof-completion evaluation.</strong> Deletes a held-out
+        theorem's proof and regenerates it from scratch, one command at a
+        time, with Isabelle in the loop. A theorem counts as proved only when
+        the kernel accepts the result.</td>
+  </tr>
+  <tr>
+    <td><a href="tools/probe_state.py"><code>tools/probe_state.py</code></a></td>
+    <td>Standalone diagnostic for the Isabelle state-panel LSP channel; used
+        during development to isolate protocol problems.</td>
+  </tr>
+</table>
+
+<h3>Cluster job scripts</h3>
+<table>
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr><td><a href="harvest_array.sbatch"><code>harvest_array.sbatch</code></a></td>
+      <td>Parallel extraction as a 32-shard Slurm job array.</td></tr>
+  <tr><td><a href="train.sbatch"><code>train.sbatch</code></a></td>
+      <td>Fine-tuning across 3&times;A100 80GB.</td></tr>
+  <tr><td><a href="eval.sbatch"><code>eval.sbatch</code></a></td>
+      <td>Per-step evaluation.</td></tr>
+  <tr><td><a href="completion.sbatch"><code>completion.sbatch</code></a></td>
+      <td>Proof-completion evaluation.</td></tr>
+  <tr><td><a href="requirements.txt"><code>requirements.txt</code></a></td>
+      <td>Pinned Python environment.</td></tr>
+</table>
+
+<h2>2. Data artefacts</h2>
+
+<h3>Corpus partition</h3>
+<p class="note">
+  These files are the record of exactly which AFP entries were held out. The
+  partition was generated from a fixed seed and applied <em>before</em>
+  extraction, so held-out entries were never processed. Without these files
+  the evaluation cannot be reproduced or verified.
+</p>
+<table>
+  <tr><th>File</th><th>Contents</th></tr>
+  <tr><td><a href="split_hol/train_entries.txt"><code>split_hol/train_entries.txt</code></a></td>
+      <td>243 AFP entries used for training.</td></tr>
+  <tr><td><a href="split_hol/test_entries.txt"><code>split_hol/test_entries.txt</code></a></td>
+      <td>61 held-out entries used for evaluation.</td></tr>
+  <tr><td><a href="split_hol/split_report.txt"><code>split_hol/split_report.txt</code></a></td>
+      <td>Stratification summary: entries, files and size per partition.</td></tr>
+</table>
+
+<h3>Test fixture</h3>
+<table>
+  <tr><th>File</th><th>Contents</th></tr>
+  <tr><td><a href="testbed/thys/Sanity/Sanity.thy"><code>testbed/thys/Sanity/Sanity.thy</code></a></td>
+      <td>Hand-written theory importing only <code>Main</code>, used to verify
+          the extraction pipeline independently of AFP session heaps.</td></tr>
+  <tr><td><a href="testbed/thys/Sanity/ROOT"><code>testbed/thys/Sanity/ROOT</code></a></td>
+      <td>Session declaration for the fixture.</td></tr>
+</table>
+
+<h2>3. Results</h2>
+<p>
+  Raw model outputs, one JSON object per line. Each record contains the
+  reference, the model's prediction, and the scoring outcome.
+</p>
+<table>
+  <tr><th>File</th><th>Contents</th></tr>
+  <tr>
+    <td><a href="results/completion_final.jsonl"><code>results/completion_final.jsonl</code></a></td>
+    <td><strong>Proof completion, fine-tuned model.</strong> 20 held-out
+        theorems; every generated command and Isabelle's verdict. 4 proved.</td>
+  </tr>
+  <tr>
+    <td><a href="results/completion_base.jsonl"><code>results/completion_base.jsonl</code></a></td>
+    <td><strong>Proof completion, base model.</strong> Same theorems, same
+        seed and budget. 0 proved.</td>
+  </tr>
+  <tr>
+    <td><a href="results/test_final_full.jsonl"><code>results/test_final_full.jsonl</code></a></td>
+    <td>Per-step predictions, fine-tuned model, all 70,242 held-out pairs.</td>
+  </tr>
+  <tr>
+    <td><a href="results/test_final.jsonl"><code>results/test_final.jsonl</code></a></td>
+    <td>Per-step predictions, fine-tuned model, 10,000-pair sample.</td>
+  </tr>
+  <tr>
+    <td><a href="results/test_base.jsonl"><code>results/test_base.jsonl</code></a></td>
+    <td>Per-step predictions, base model, same 10,000-pair sample.</td>
+  </tr>
+  <tr>
+    <td><a href="results/val_final.jsonl"><code>results/val_final.jsonl</code></a></td>
+    <td>Validation predictions, epoch-2 checkpoint.</td>
+  </tr>
+  <tr>
+    <td><a href="results/val_epoch1.jsonl"><code>results/val_epoch1.jsonl</code></a></td>
+    <td>Validation predictions, epoch-1 checkpoint. Used for the
+        checkpoint-selection comparison.</td>
+  </tr>
+  <tr>
+    <td><a href="results/training_history.json"><code>results/training_history.json</code></a></td>
+    <td>Complete training history: training and validation loss at every
+        logged step across both epochs. Evidence for the checkpoint-selection
+        comparison.</td>
+  </tr>
+  <tr>
+    <td><a href="results/completion_run_log.txt"><code>results/completion_run_log.txt</code></a></td>
+    <td>Full log of a proof-completion run: every command the model generated
+        and Isabelle's response, step by step.</td>
+  </tr>
+</table>
+
+<h2>4. Documents</h2>
+<table>
+  <tr><th>File</th><th>Contents</th></tr>
+  <tr>
+    <td><a href="docs/Fine-tune%20LLM%20for%20Mechanised%20Proof%20Automation.pdf"><code>docs/Fine-tune LLM for Mechanised Proof Automation.pdf</code></a></td>
+    <td>Original project proposal.</td>
+  </tr>
+  <tr>
+    <td><a href="docs/Critical%20Review.pdf"><code>docs/Critical Review.pdf</code></a></td>
+    <td>Critical review assessment submitted earlier in the module.</td>
+  </tr>
+  <tr>
+    <td><a href="README.md"><code>README.md</code></a></td>
+    <td>Repository overview and instructions for reproducing each stage.</td>
+  </tr>
+</table>
+
+<h2>5. Excluded from this corpus</h2>
+<p>
+  Three artefacts are omitted for size. All are reproducible from the code
+  above.
+</p>
+<table>
+  <tr><th>Artefact</th><th>Size</th><th>How to obtain</th></tr>
+  <tr>
+    <td>AFP snapshot <span class="mono">2026-06-29</span></td>
+    <td>370&nbsp;MB</td>
+    <td>Archive of Formal Proofs, <a href="https://www.isa-afp.org/">isa-afp.org</a></td>
+  </tr>
+  <tr>
+    <td>Extracted proof-state corpus</td>
+    <td>24&nbsp;GB</td>
+    <td><code>harvest_array.sbatch</code>, then <code>merge_shards.py</code></td>
+  </tr>
+  <tr>
+    <td>Model checkpoints</td>
+    <td>220&nbsp;GB</td>
+    <td><code>train.sbatch</code> from <code>Qwen/Qwen2.5-Coder-7B</code></td>
+  </tr>
+</table>
+
+<footer>
+  Source repository:
+  <a href="https://github.com/ExoticTuga/Proof-Automation">github.com/ExoticTuga/Proof-Automation</a><br>
+  Isabelle revision: <code>isabelle-emacs</code> Isabelle2025-2-vsce &middot;
+  Base model: <code>Qwen/Qwen2.5-Coder-7B</code>
+</footer>
+
+</body>
+</html>
