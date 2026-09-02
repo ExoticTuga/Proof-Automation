@@ -12,9 +12,16 @@ All figures are on held-out AFP entries absent from training.
 
 | | Base Qwen2.5-Coder-7B | Fine-tuned |
 |---|---|---|
-| Proofs accepted by Isabelle | 0 / 19 | **4 / 20** |
+| Proofs accepted by Isabelle | 0 / 19 | **3 / 19** |
 | Exact match (70,242 steps) | 5.1% | **35.9%** |
 | Command match (70,242 steps) | 12.6% | **68.2%** |
+
+Completion is reported on the 19 theorems **both** models attempted. The
+fine-tuned run additionally proved a twentieth theorem that the base run never
+reached, because the theory failed to elaborate within its warm-up budget;
+counting it would compare different denominators.
+`compare_completion.py` checks this. Use `--targets-in` to fix an identical
+theorem list across runs.
 
 ## The problem
 
@@ -56,9 +63,9 @@ theory file and records the proof state Isabelle reports at each position.
 python src/afp_harvest.py --self-test
 ```
 
-35 assertions over the Isar lexer, cursor positioning, proof segmentation and
-training-pair construction. Each of the three extraction defects encountered
-during development is covered by a regression case.
+32 assertions over the Isar lexer, cursor positioning, proof segmentation and
+training-pair construction. Each extraction defect encountered during
+development is covered by a regression case.
 
 ```bash
 python src/afp_harvest.py --afp <afp>/thys --show-blocks > blocks.txt
@@ -77,7 +84,7 @@ python src/split_entries.py --afp <afp>/thys --test-frac 0.2 \
        --only-parents HOL --out-dir split_hol
 
 # 2. extract proof states (Slurm job array; ~9 h across 14 tasks)
-sbatch harvest_array.sbatch
+sbatch slurm/harvest_array.sbatch
 python src/merge_shards.py data/train --out data/train_merged \
        --expect-entries split_hol/train_entries.txt \
        --test-entries  split_hol/test_entries.txt
@@ -87,16 +94,17 @@ python src/validate_dataset.py data/train_merged
 python src/prepare_dataset.py data/train_merged/states.jsonl --out data/sft
 
 # 4. fine-tune (3 x A100 80GB, ~52 h)
-sbatch train.sbatch
+sbatch slurm/train.sbatch
 
 # 5. evaluate
-sbatch eval.sbatch                          # per-step
-MODEL=runs/qwen7b/final sbatch completion.sbatch   # proof completion
+sbatch slurm/eval.sbatch                          # per-step
+MODEL=runs/qwen7b/final sbatch slurm/completion.sbatch   # proof completion
 ```
 
 ## Notes on the implementation
 
-Three points cost more to discover than the code suggests.
+Three points cost more to discover than the code suggests. The third is a
+limitation of this version rather than a fix.
 
 **The state panel is a separate LSP channel from the output panel.**
 `PIDE/dynamic_output` carries proof hints and completed theorems, and is
@@ -111,18 +119,25 @@ requests HTML and converts it back, which is lossless: the pretty-printer
 breaks lines before rendering, so the HTML's text content is the plain-text
 state.
 
-**Isabelle theories can define their own commands.** A theory header may
-declare `keywords "sepref_definition" :: thy_goal`, making that a goal-opening
-command for every importing theory. No fixed keyword list can anticipate
-these, and an unrecognised goal-opener loses an entire theory's context. The
-extraction reads these declarations from the corpus, as Isabelle itself does.
+**Isabelle theories can define their own commands — a known limitation.** A
+theory header may declare `keywords "sepref_definition" :: thy_goal`, making
+that a goal-opening command for every importing theory. No fixed keyword list
+can anticipate these, and an unrecognised goal-opener loses an entire theory's
+surrounding context.
+
+This was identified after extraction had completed and is **not** implemented
+in the version here. Re-extracting and retraining was not feasible in the time
+available, so the code shipped is the code that produced the reported results.
+The effect is bounded: approximately 3.5% of extracted records lack prefix and
+continuation, concentrated in entries built on proof frameworks. Proof states
+themselves are unaffected. Implementing it is the first item of future work.
 
 ## Repository layout
 
 ```
 src/                pipeline: extraction, dataset prep, training, evaluation
 tools/              standalone diagnostics
-*.sbatch            Slurm job scripts
+slurm/              Slurm job scripts (cluster-specific; edit paths at the top)
 split_hol/          the train/test partition (which entries were held out)
 testbed/            minimal theory fixture for testing without AFP heaps
 results/            raw model outputs from every evaluation run

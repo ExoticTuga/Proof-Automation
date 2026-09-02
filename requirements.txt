@@ -1,11 +1,21 @@
-annotated-types==0.8.0
-isabelle_lsp_client @ git+https://github.com/christiankissig/python-isabelle-lsp-client.git@b8c7e221d1aef9eee4371eb4977f24b7474a6794
-librt==0.15.0
-lsp_client @ git+https://github.com/christiankissig/python-lsp-client.git@b0f421a4cd94fff87aca364c4bb4c2e59677be9b
-mypy==1.20.2
-mypy_extensions==1.1.0
-pathspec==1.1.1
-pydantic==2.13.4
-pydantic_core==2.46.4
-typing-inspection==0.4.4
-typing_extensions==4.16.0
+# Python 3.12
+#
+# Pinned to the versions the reported results were produced with. Later
+# versions of transformers rename TrainingArguments parameters; train_sft.py
+# inspects the installed signature and drops arguments it does not accept, so
+# it tolerates drift, but the figures in the dissertation come from these.
+
+# --- model training and inference
+torch==2.13.0
+transformers==5.15.1
+accelerate>=1.0.0
+safetensors>=0.4.0
+tokenizers>=0.20.0
+
+# --- driving Isabelle over LSP (extraction and proof-completion evaluation)
+isabelle-lsp-client==0.0.2
+lsp-client>=0.1.0
+pydantic>=2.0.0
+
+# --- model download
+huggingface_hub>=0.26.0

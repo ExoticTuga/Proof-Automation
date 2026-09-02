@@ -96,7 +96,6 @@ class Target:
     file: str
     entry: str
     line: int                 # 1-indexed line of the opening command
-    stmt_start: int           # char offset of the opening command
     stmt_end: int             # char offset just after the statement
     body_end: int             # char offset at the end of the original proof
     statement: str
@@ -153,7 +152,7 @@ def find_targets(thy: Path, min_steps: int, max_steps: int,
         out.append(Target(
             file=str(thy), entry=thy.parent.name,
             line=text[:s].count("\n") + 1,
-            stmt_start=s, stmt_end=stmt_end, body_end=e,
+            stmt_end=stmt_end, body_end=e,
             statement=" ".join(text[s:stmt_end].split()),
             reference=" ".join(text[stmt_end:e].split()),
         ))
@@ -167,7 +166,7 @@ def find_targets(thy: Path, min_steps: int, max_steps: int,
 class Tactician:
     """Wraps the fine-tuned model; returns candidate next commands."""
 
-    def __init__(self, model_path: str, max_new_tokens: int = 160) -> None:
+    def __init__(self, model_path: str, max_new_tokens: int = 48) -> None:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         self.torch = torch
@@ -366,38 +365,6 @@ class RawRequest:
 # One attempt
 # --------------------------------------------------------------------------- #
 
-def proof_closed(stmt_and_body: str) -> bool:
-    """True if the generated text explicitly closes the proof.
-
-    Closure CANNOT be read from the state panel: when a command discharges
-    the last goal Isabelle sends no further state, so a poll returns the
-    previous goal unchanged and the loop concludes the proof is still open.
-    Observed consequence -- the model wrote `by blast`, proving the theorem,
-    then dutifully began the NEXT lemma of the file, which failed and was
-    recorded as a failure of a proof that had in fact succeeded.
-
-    Depth is tracked so that `by` closing an inner `have` is not mistaken for
-    closing the theorem.
-    """
-    depth = 0
-    seen_opener = False
-    for kw, _s, _e in command_spans(stmt_and_body):
-        if not seen_opener:
-            seen_opener = True          # the lemma/theorem statement itself
-            continue
-        if kw == "proof":
-            depth += 1
-        elif kw == "qed":
-            depth -= 1
-            if depth <= 0:
-                return True
-        elif kw in ("done", "by") and depth == 0:
-            return True
-        elif kw in CHEATS:
-            return False
-    return False
-
-
 def goal_is_closed(state: str) -> bool:
     s = state.lower()
     return "no subgoals" in s or (
@@ -433,8 +400,8 @@ async def attempt_proof(sess: IsabelleSession, tac: Tactician, original: str,
                 statement=t.statement, reference=t.reference)
     t0 = time.monotonic()
     head = original[:t.stmt_end]
-    stmt = original[t.stmt_start:t.stmt_end]   # statement only, for closure
     body = ""
+    closed_goal = False
 
     for step in range(cfg.max_steps + 1):
         doc_text = head + body
@@ -449,15 +416,19 @@ async def attempt_proof(sess: IsabelleSession, tac: Tactician, original: str,
             a.reason = f"error: {errs[0][:120]}"
             break
 
-        if body.strip() and proof_closed(stmt + body):
-            # Syntactically closed AND no error diagnostic: Isabelle accepted
-            # the proof. Checked before asking for another command, or the
-            # model is invited to continue past a theorem it has proved.
+        if closed_goal:
+            # The goal was discharged and the model has now supplied a closing
+            # command that Isabelle accepted without error.
             a.proved = True
-            a.reason = "proof closed, no errors"
+            a.reason = "goal discharged, proof closed"
             break
 
-        if not state.strip():
+        if goal_is_closed(state) and body.strip():
+            # Goal gone but the proof not yet formally closed: the model must
+            # still produce qed/done. Requiring this avoids crediting a proof
+            # that was never terminated.
+            closed_goal = True
+        elif not state.strip():
             a.reason = ("no proof state" if step == 0
                         else "state vanished (command broke elaboration?)")
             break
@@ -466,12 +437,7 @@ async def attempt_proof(sess: IsabelleSession, tac: Tactician, original: str,
             a.reason = f"step budget ({cfg.max_steps}) exhausted"
             break
 
-        # Prefix must be scoped to the ENCLOSING PROOF, matching how the
-        # training pairs were built. Passing the tail of the whole file
-        # instead supplies unrelated neighbouring lemmas and puts the prompt
-        # off the distribution the model was fitted to.
-        proof_prefix = original[t.stmt_start:t.stmt_end] + body
-        cands = tac.propose(proof_prefix, state, cfg.num_candidates,
+        cands = tac.propose(head + body, state, cfg.num_candidates,
                             cfg.temperature)
         chosen = None
         for c in cands:
@@ -490,7 +456,6 @@ async def attempt_proof(sess: IsabelleSession, tac: Tactician, original: str,
 
     a.seconds = round(time.monotonic() - t0, 1)
     return a
-
 
 # --------------------------------------------------------------------------- #
 
@@ -523,6 +488,7 @@ async def main_async(cfg) -> int:
     # A high count means the theory elaborates quickly and reliably, so the
     # attempt measures the model rather than the build system. Within that,
     # shuffle so the sample is not confined to a handful of entries.
+    all_targets = list(targets)
     import random
     rng = random.Random(cfg.seed)
     rng.shuffle(targets)
@@ -544,6 +510,22 @@ async def main_async(cfg) -> int:
             if i > cfg.limit * 2:
                 break
         targets = picked
+    if cfg.targets_in:
+        keys = [tuple(x) for x in json.load(open(cfg.targets_in))]
+        index = {(t.file, t.line): t for t in all_targets}
+        missing = [k for k in keys if tuple(k) not in index]
+        if missing:
+            raise SystemExit(f"{len(missing)} targets from "
+                             f"{cfg.targets_in} not found, e.g. {missing[:3]}")
+        targets = [index[tuple(k)] for k in keys]
+        log.info("loaded %d targets from %s", len(targets), cfg.targets_in)
+
+    if cfg.targets_out:
+        Path(cfg.targets_out).parent.mkdir(parents=True, exist_ok=True)
+        with open(cfg.targets_out, "w") as fh:
+            json.dump([[t.file, t.line] for t in targets], fh, indent=1)
+        log.info("wrote %d targets to %s", len(targets), cfg.targets_out)
+
     by_file: dict[str, list[Target]] = {}
     for t in targets:
         by_file.setdefault(t.file, []).append(t)
@@ -564,15 +546,36 @@ async def main_async(cfg) -> int:
         try:
             await sess.start(thy)
         except Exception as e:
+            # Record rather than skip. A dropped theorem shrinks the
+            # denominator, so two runs over the same targets would report
+            # different totals and cease to be comparable -- an
+            # infrastructure difference presenting as a difference in
+            # capability.
             log.warning("%s: Isabelle failed to start (%s)", thy.name, e)
+            for t in group:
+                a = Attempt(file=t.file, entry=t.entry, line=t.line,
+                            statement=t.statement, reference=t.reference,
+                            reason=f"isabelle failed to start: {e}"[:120])
+                results.append(a)
+                out.write(json.dumps(asdict(a), ensure_ascii=False) + "\n")
+            out.flush()
             continue
         # Wait for the theory to elaborate before the first attempt: a large
         # file in a heavy session can take minutes, and a premature read
         # returns an empty state that looks like a model failure.
         warm = await sess.warm_up(original, group[0], cfg.warmup)
         if not warm:
-            log.warning("%s: no state after %.0fs warm-up; skipping %d "
-                        "theorems", thy.name, cfg.warmup, len(group))
+            log.warning("%s: no state after %.0fs warm-up; recording %d "
+                        "theorems as unattempted", thy.name, cfg.warmup,
+                        len(group))
+            for t in group:
+                a = Attempt(file=t.file, entry=t.entry, line=t.line,
+                            statement=t.statement, reference=t.reference,
+                            reason=f"theory did not elaborate within "
+                                   f"{cfg.warmup:.0f}s warm-up")
+                results.append(a)
+                out.write(json.dumps(asdict(a), ensure_ascii=False) + "\n")
+            out.flush()
             await sess.stop()
             continue
         log.info("%s: elaborated, attempting %d theorems", thy.name, len(group))
@@ -593,10 +596,6 @@ async def main_async(cfg) -> int:
                 mark = "PROVED" if a.proved else "     -"
                 log.info("%s %s:%d  %d steps %.0fs  %s", mark, thy.name,
                          a.line, a.steps, a.seconds, a.statement[:60])
-                for g in a.generated:
-                    log.info("          > %s", g[:110])
-                if not a.proved:
-                    log.info("          ! %s", a.reason[:110])
         finally:
             await sess.stop()
             # restore: we only ever edited the in-memory document, but be safe
@@ -638,12 +637,20 @@ def main() -> int:
     ap.add_argument("--warmup", type=float, default=180.0,
                     help="seconds to wait for a theory to elaborate before "
                          "the first attempt in it")
-    ap.add_argument("--settle", type=float, default=12.0)
+    ap.add_argument("--settle", type=float, default=20.0)
     ap.add_argument("--theorem-timeout", type=float, default=300.0)
     ap.add_argument("--write-back", action="store_true",
                     help="rewrite the source file on disk (off by default: "
                          "edits are made to the in-memory LSP document only, "
                          "so the corpus is never modified)")
+    ap.add_argument("--targets-out", default=None,
+                    help="write the selected theorems to this file")
+    ap.add_argument("--targets-in", default=None,
+                    help="read the theorem list from a file written by "
+                         "--targets-out. Use this to guarantee that two "
+                         "models are evaluated on an IDENTICAL set: sampling "
+                         "with the same seed is not sufficient if the "
+                         "candidate pool differs between runs.")
     ap.add_argument("--seed", type=int, default=20260825)
     ap.add_argument("-v", "--verbose", action="store_true")
     cfg = ap.parse_args()

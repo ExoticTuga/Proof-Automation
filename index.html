@@ -71,7 +71,7 @@
 
 <p>
   This corpus contains the software, data artefacts and supporting documents
-  produced by the project. The dissertation is submitted separately.
+  produced by the project.
 </p>
 
 <div class="results">
@@ -79,10 +79,16 @@
   the model never saw during training.
   <table>
     <tr><th>Metric</th><th class="num">Base Qwen2.5-Coder-7B</th><th class="num">Fine-tuned</th></tr>
-    <tr><td>Proofs accepted by Isabelle</td><td class="num">0 / 19</td><td class="num win">4 / 20</td></tr>
+    <tr><td>Proofs accepted by Isabelle <small>(common set)</small></td><td class="num">0 / 19</td><td class="num win">3 / 19</td></tr>
     <tr><td>Exact match (70,242 steps)</td><td class="num">5.1%</td><td class="num win">35.9%</td></tr>
     <tr><td>Command match (70,242 steps)</td><td class="num">12.6%</td><td class="num win">68.2%</td></tr>
   </table>
+  <p style="margin:.4rem 0 .2rem;font-size:.92rem;color:var(--muted)">
+    Completion is reported on the 19 theorems <em>both</em> models attempted.
+    The fine-tuned run proved a twentieth that the base run never reached, its
+    theory having failed to elaborate within the warm-up budget; counting it
+    would compare different denominators.
+  </p>
 </div>
 
 <h2>1. Pipeline source</h2>
@@ -102,7 +108,9 @@
         positions, drives Isabelle over LSP, records the proof state at each
         position. Includes a 35-assertion offline test suite
         (<code>--self-test</code>) and a static segmentation check
-        (<code>--show-blocks</code>).</td>
+        (<code>--show-blocks</code>). This is the version that produced the
+        reported corpus; see the README for one known limitation identified
+        after extraction completed.</td>
   </tr>
   <tr>
     <td><a href="src/panel_text.py"><code>src/panel_text.py</code></a></td>
@@ -154,6 +162,12 @@
         the kernel accepts the result.</td>
   </tr>
   <tr>
+    <td><a href="tools/compare_completion.py"><code>tools/compare_completion.py</code></a></td>
+    <td>Checks that two proof-completion runs attempted the same theorems, and
+        reports the score on the common set. A completion figure is not
+        meaningful unless the denominators match.</td>
+  </tr>
+  <tr>
     <td><a href="tools/probe_state.py"><code>tools/probe_state.py</code></a></td>
     <td>Standalone diagnostic for the Isabelle state-panel LSP channel; used
         during development to isolate protocol problems.</td>
@@ -163,13 +177,13 @@
 <h3>Cluster job scripts</h3>
 <table>
   <tr><th>File</th><th>Purpose</th></tr>
-  <tr><td><a href="harvest_array.sbatch"><code>harvest_array.sbatch</code></a></td>
+  <tr><td><a href="slurm/harvest_array.sbatch"><code>harvest_array.sbatch</code></a></td>
       <td>Parallel extraction as a 32-shard Slurm job array.</td></tr>
-  <tr><td><a href="train.sbatch"><code>train.sbatch</code></a></td>
+  <tr><td><a href="slurm/train.sbatch"><code>train.sbatch</code></a></td>
       <td>Fine-tuning across 3&times;A100 80GB.</td></tr>
-  <tr><td><a href="eval.sbatch"><code>eval.sbatch</code></a></td>
+  <tr><td><a href="slurm/eval.sbatch"><code>eval.sbatch</code></a></td>
       <td>Per-step evaluation.</td></tr>
-  <tr><td><a href="completion.sbatch"><code>completion.sbatch</code></a></td>
+  <tr><td><a href="slurm/completion.sbatch"><code>completion.sbatch</code></a></td>
       <td>Proof-completion evaluation.</td></tr>
   <tr><td><a href="requirements.txt"><code>requirements.txt</code></a></td>
       <td>Pinned Python environment.</td></tr>
@@ -214,12 +228,13 @@
   <tr>
     <td><a href="results/completion_final.jsonl"><code>results/completion_final.jsonl</code></a></td>
     <td><strong>Proof completion, fine-tuned model.</strong> 20 held-out
-        theorems; every generated command and Isabelle's verdict. 4 proved.</td>
+        theorems; every generated command and Isabelle's verdict. 4 proved,
+        of which 3 fall in the set the base model also attempted.</td>
   </tr>
   <tr>
     <td><a href="results/completion_base.jsonl"><code>results/completion_base.jsonl</code></a></td>
-    <td><strong>Proof completion, base model.</strong> Same theorems, same
-        seed and budget. 0 proved.</td>
+    <td><strong>Proof completion, base model.</strong> Same seed and budget;
+        19 of the 20 theorems reached. 0 proved.</td>
   </tr>
   <tr>
     <td><a href="results/test_final_full.jsonl"><code>results/test_final_full.jsonl</code></a></td>
